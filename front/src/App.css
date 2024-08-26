@@ -1,0 +1,45 @@
+:root{
+  scroll-behavior: smooth;
+  --primary: #41B8AF;
+  --second: #95D7A1;
+  --bg: #333;
+  --bg-light: #e9f7ef;
+  --red:#F7493C;
+  --bg-blue:#316F79;
+  
+--SeafoamGreen: #B5E0B7;
+--Celadon-Green: #B2D8B7;
+--MossGreen: #98BF91;
+--Eucalyptus-Green: #85A394;
+--Pear-Green: #d9e4e1;
+
+}
+body{
+  background-color: var(--bg-light);
+  color: var(--bg);
+}
+
+.sidebarapp {
+  width: 251px; 
+  background-color: var(--bg-light); 
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;}
+
+.main-content{
+  width: 50em;
+  border: 1px solid red;
+  float: right;
+  margin-top: 70px;
+  padding: 20px 30px;
+  transition: all 0.3s;
+  background-color: var(--bg-light);
+  background-image: radial-gradient(var(--MossGreen) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+@media (max-width:1199px){
+  .main-content{
+      padding: 20px;
+  }
+}

@@ -1,0 +1,11 @@
+.dashboard-content{
+    padding: 20px 30px;
+    transition: all 0.3s;
+    width: 100%;
+    background: transparent;
+}
+@media (max-width:1199px){
+    .dash{
+        padding: 20px;
+    }
+}

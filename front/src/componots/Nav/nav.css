@@ -1,0 +1,42 @@
+.header-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.bi-list{
+  font-size: 35px;
+  display: none;
+}
+.header-nav > ul{
+    margin: 0;
+    padding: 0;
+}
+.header-nav{
+    font-size: 15px;
+    margin-right: 2em;
+    color: var(--primary);
+    width: 12%;
+}
+
+@media (max-width: 760px) {
+    .header-nav {
+      font-size: 15px;
+      margin-right: 2em;
+      color: var(--primary);
+      width: 30%;
+    }
+    
+  .not{
+    display: none;
+  }
+  .bi-list{
+    display: block;
+    font-size: 55px;
+    float: right;
+    padding: 10px;
+  }
+ 
+  }
+  

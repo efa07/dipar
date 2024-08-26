@@ -1,0 +1,91 @@
+.nav-notice-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-notice-icon {
+  font-size: 1.5em;
+  cursor: pointer;
+  position: relative; /* Ensure the badge is positioned correctly */
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background-color: var(--red);
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+}
+
+.nav-notice-dropdown {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 100%;
+  right: 0;
+  color: #333;
+  padding: 10px 20px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-size: 1em;
+  width: 350px;
+  height: 400px;
+}
+.nav-notice-dropdown ul{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+.nav-notice-dropdown ul li{
+  border-bottom: 2px solid var(--primary);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .nav-notice-dropdown {
+    font-size: 0.9em;
+    padding: 8px 15px;
+  }
+
+  .nav-notice-icon {
+    font-size: 1.3em;
+  }
+
+  .notification-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-notice-dropdown {
+    font-size: 0.8em;
+    padding: 6px 10px;
+    width: 200px;
+  }
+
+  .nav-notice-icon {
+    font-size: 1.2em;
+  }
+
+  .notification-badge {
+    width: 16px;
+    height: 16px;
+    font-size: 0.7em;
+  }
+}

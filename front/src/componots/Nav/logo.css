@@ -1,0 +1,16 @@
+img{
+    width: 4em;
+    height: 4em;
+    background-size: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+.header .toggle-sidebar-btn{
+    font-size: 32px;
+    padding-left: 10px;
+    cursor: pointer;
+    color: var(--primary);
+    margin-right: 20px;
+    
+}
+

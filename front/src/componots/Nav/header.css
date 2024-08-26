@@ -1,0 +1,9 @@
+.header{
+    transition: all 0.5s;
+    z-index: 1000;
+    height: 70px;
+    box-shadow: 0px 2px 20px var(--Celadon-Green);
+    background-color: var(--bg-light);
+    padding: 20px; 
+}
+

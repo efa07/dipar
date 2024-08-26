@@ -1,0 +1,86 @@
+.sidebar-nav {
+  padding-left: 0;
+  width: 250px;
+  background-color: var(--bg-light);
+  padding-top: 20px;
+  position: fixed; 
+  height: 100vh; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+.nav-item {
+  padding: 10px 15px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-link:hover,
+.nav-link.collapsed:hover {
+  background-color: #e2e6ea;
+  border-radius: 4px;
+}
+
+.nav-link i {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.nav-content {
+  padding-left: 30px;
+}
+
+.nav-content li {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.nav-content .nav-link {
+  color: #555;
+}
+
+.nav-content .nav-link:hover {
+  color: var(--primary);
+  background-color: transparent;
+}
+
+.bi-chevron-down {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.collapsed .bi-chevron-down {
+  transform: rotate(0deg);
+}
+
+.collapse.show .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+/* scroll bar */
+.sidebar-nav::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+/* Scrollbar Track */
+.sidebar-nav::-webkit-scrollbar-track {
+  background: var(--bg-light); /* Background of the scrollbar track */
+  border-radius: 10px; /* Optional: round corners */
+}
+
+/* Scrollbar Handle */
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: var(--primary); /* Color of the scrollbar handle */
+  border-radius: 10px; /* Optional: round corners */
+  border: 3px solid #f1f1f1; /* Adds a border around the scrollbar handle */
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: #555; 
+}
