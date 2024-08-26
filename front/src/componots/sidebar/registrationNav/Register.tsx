@@ -35,7 +35,7 @@ const sidebarItems = [
             </svg>
           ),
           text: "Emergency Registration",
-          href: "#",
+          href: "/register/emergency",
         },
       ],
     },
@@ -53,11 +53,6 @@ const sidebarItems = [
       icon: "bi bi-person",
       text: "Profile",
       href: "/register/profile",
-    },
-    {
-      icon: "bi bi-gear",
-      text: "Settings",
-      href: "/register/settings",
     },
 ];
 

@@ -2,7 +2,7 @@ import "./ap.css"
 
 const Appointments = () => {
   return (
-    <div className="ap">
+    <div className="dap">
         <h1>Appointments</h1>
         <div className="appointment-item">
             <p><strong>Date:</strong> 12/12/2021</p>

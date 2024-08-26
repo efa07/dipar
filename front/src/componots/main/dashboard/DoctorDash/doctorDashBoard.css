@@ -14,23 +14,39 @@
 }
 
 .patient-info {
-  background-color: var(--bg-light);
+  background-color: #fff;
   padding: 15px;
   border-radius: 20px;
   box-shadow: 0 10px 10px rgba(1, 111, 0, 0.3);
   margin-bottom: 20px;
  
 }
-
-.imgName{
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
-  flex-direction: column;
-  width: 100%;
+.info{
+  width: 50%;
 }
-
+.imgName{
+  width: 200px;
+  height: 200px;
+  float: right;
+  margin-right: 9em;
+  border-radius: 20px;
+  margin-top: -40px;
+  box-shadow: 0 10px 10px rgba(1, 111, 0, 0.3); 
+}
+@media (max-width: 900px) {
+  .imgName{
+    width: 150px;
+    height: 150px;
+    float: right;
+    margin-right: 9em;
+    margin-right: auto;
+    border-radius: 20px;
+    margin-top: -40px;
+    box-shadow: 0 10px 10px rgba(1, 111, 0, 0.3); 
+  }
+}
 .patient-info h3 {
+  width: 30%;
   color: #333;
 color: var(--bg-blue);
 }
@@ -40,23 +56,10 @@ color: var(--bg-blue);
 }
 
 .patient-info img {
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
   object-fit: cover;
-}
-
-.appointment-history,
-.medical-records,
-.test-results,
-.prescriptions,
-.ongoing-treatments,
-.allergies {
-  background-color: var(--bg-light);
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
 }
 
 .appointment-history h3,

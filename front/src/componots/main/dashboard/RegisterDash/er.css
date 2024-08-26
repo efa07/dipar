@@ -1,62 +1,57 @@
-.ap {
+.emr {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
   background-color: #f8f9fa;
-  width: 100%;
-  margin-top: 40px;
-  height: auto;
-
+  margin-top: 60px;
 }
 
-.ap .appointment-form {
+.emr .emergency-form {
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.ap .appointment-form h2 {
+.emr .emergency-form h2 {
   margin-bottom: 1.5rem;
   text-align: center;
   font-size: 1.8rem;
   color: #333;
 }
 
-.ap .form-group {
+.emr .form-group {
   margin-bottom: 1.25rem;
 }
 
-.ap .form-group label {
+.emr .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
   color: #555;
 }
 
-.ap .form-group input[type="text"],
-.form-group input[type="date"],
-.form-group input[type="time"],
-.form-group textarea,
-.form-group select {
+.emr .form-group input[type="text"],
+.form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  resize: vertical;
   transition: border-color 0.3s ease;
 }
 
-.ap .form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+.emr .form-group input[type="text"]:focus,
+.form-group textarea:focus {
   border-color: var(--second);
   outline: none;
 }
 
-.ap button[type="submit"] {
+.emr button[type="submit"] {
   width: 100%;
   padding: 0.75rem;
   background-color: var(--second);
@@ -69,10 +64,10 @@
   transition: background-color 0.3s ease;
 }
 
-.ap button[type="submit"]:hover {
+.emr button[type="submit"]:hover {
   background-color: var(--second);
 }
 
-.ap button[type="submit"]:active {
-  background-color: #003f7f;
+.emr button[type="submit"]:active {
+  background-color: #1e7e34;
 }

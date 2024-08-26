@@ -4,8 +4,8 @@ const Logo = () => {
 
 
   return (
-<div className="d-flex align-items-center justify-content-between">
-    <a href='/' className='logo d-flex align-items-center'>
+<div>
+    <a href='/' className='logo'>
     <img src={logo} alt='logo' />
     </a>
     </div>

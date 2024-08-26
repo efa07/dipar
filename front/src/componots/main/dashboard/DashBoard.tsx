@@ -1,17 +1,21 @@
 import { Routes, Route } from 'react-router-dom';
-import DoctorDashboard from './DoctorDash/DoctorDashboard';
+import DoctorDashboard from "./DoctorDash/DoctorDashboard"
 import Appointments from './DoctorDash/Appointments';
 import MedicalRecords from './DoctorDash/MedicalRecords';
 import Prescriptions from './DoctorDash/Prescriptions';
 import TestResult from './DoctorDash/TestResults';
 import TodoList from './DoctorDash/Todo';
 import ProfileManagement from './DoctorDash/ProfileAndSetting';
-import NotFound from "../.././NotFound"
+import NotFound from "../../NotFound"
 import PtaientLabTestForm from './DoctorDash/PtaientLabTestForm';
 
 import ReceptionistDashboard from './RegisterDash/ReceptionistDashboard';
 import MedicalRecordForm from './RegisterDash/MedicalRecordForm';
 import Welcom from "./welcom/Welcom";
+import AppointmentSchedulingForm from './RegisterDash/Appointment';
+import EmergencyRegistrationForm from './RegisterDash/EmergencyRegistration';
+import ReceptionUserProfileSettings from './RegisterDash/ReceptionProfile';
+
 import "./dashboard.css";
 
 const Dashboard = () => {
@@ -30,9 +34,11 @@ const Dashboard = () => {
 
         
         <Route path="/new" element={<ReceptionistDashboard />} />
-        <Route path='/register/medicalRecords' element={<MedicalRecordForm />} />
+        <Route path='/medicalRecords' element={<MedicalRecordForm />} />
         <Route path="welcom" element={<Welcom />} />
-       
+        <Route path="/appointment" element={<AppointmentSchedulingForm />} />
+       <Route path='/emergency' element={<EmergencyRegistrationForm />} />
+       <Route path="/profile" element={<ReceptionUserProfileSettings/>}/>
 
 
       </Routes>

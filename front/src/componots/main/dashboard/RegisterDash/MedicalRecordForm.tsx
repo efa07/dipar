@@ -17,12 +17,12 @@ const MedicalRecordForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission (e.g., save data to database)
-    console.log(medicalRecordData); // For testing purposes
+    console.log(medicalRecordData); 
   };
 
   return (
-    <div className="medical-record-form">
+    <div className="mr">
+<div className="medical-record-form">
       <h2>Medical Record</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -56,6 +56,8 @@ const MedicalRecordForm = () => {
         <button type="submit">Save Medical Record</button>
       </form>
     </div>
+    </div>
+    
   );
 };
 

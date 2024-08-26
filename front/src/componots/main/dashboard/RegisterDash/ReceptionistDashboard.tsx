@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import "./dash.css"
+import "./rdb.css"
 const ReceptionistDashboard = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -31,7 +31,8 @@ const ReceptionistDashboard = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="con">
+<div className="form-container">
       <h2>Patient Registration Form</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -81,7 +82,6 @@ const ReceptionistDashboard = () => {
             </option>
             <option value="male">Male</option>
             <option value="female">Female</option>
-            <option value="other">Other</option>
           </select>
         </div>
         <div className="form-group">
@@ -194,6 +194,8 @@ const ReceptionistDashboard = () => {
         </div>
       </form>
     </div>
+    </div>
+    
   );
 };
 

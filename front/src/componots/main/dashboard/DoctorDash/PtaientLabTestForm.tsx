@@ -1,102 +1,81 @@
-import  { useState } from 'react';
 import "./ptf.css";
 
-const PtaientLabTestForm = () => {
-  const [formData, setFormData] = useState({
-    patientName: '',
-    pid: '',
-    testName: '',
-    testResult: '',
-    testDate: '',
-    testTime: '',
-  });
-
-  // Function to handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-
-    // Handle form data (e.g., send it to an API, log to console)
-    console.log('Form data submitted:', formData);
-  };
-
-  // Function to handle input changes
-  const handleChange = (event) => {
-    const { id, value } = event.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
-  };
-
+const PatientLabTestForm = () => {
   return (
-    <div>
-      <h1>Lab Test Form</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="patientName" className="form-label">Patient Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="patientName"
-            aria-describedby="patientNameHelp"
-            value={formData.patientName}
-            onChange={handleChange}
-          />
-          <div id="patientNameHelp" className="form-text">Enter the name of the patient</div>
+    <div className="pt">
+<div className="form-container">
+      <h2>Lab Test Request Form</h2>
+      <form action="/submit-lab-test" method="post">
+        <div className="form-group">
+          <label htmlFor="patientName">Patient Name:</label>
+          <input type="text" id="patientName" name="patientName" required />
         </div>
-        <div className="mb-3">
-          <label htmlFor="pid" className="form-label">Patient ID</label>
-          <input
-            type="text"
-            className="form-control"
-            id="pid"
-            aria-describedby="pidHelp"
-            value={formData.pid}
-            onChange={handleChange}
-          />
-          <div id="pidHelp" className="form-text">Enter the patient ID</div>
+
+        <div className="form-group">
+          <label htmlFor="patientId">Patient ID:</label>
+          <input type="text" id="patientId" name="patientId" required />
         </div>
-        <div className="mb-3">
-          <label htmlFor="testName" className="form-label">Test Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="testName"
-            aria-describedby="testNameHelp"
-            value={formData.testName}
-            onChange={handleChange}
-          />
-          <div id="testNameHelp" className="form-text">Enter the name of the test</div>
+
+        <div className="form-group">
+          <label>Select Lab Test(s):</label>
+          <div className="checkbox-group">
+            <label>
+              <input type="checkbox" name="labTests" value="Complete Blood Count (CBC)" /> Complete Blood Count (CBC)
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Blood Glucose Test" /> Blood Glucose Test
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Liver Function Test (LFT)" /> Liver Function Test (LFT)
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Lipid Profile" /> Lipid Profile
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Thyroid Function Test" /> Thyroid Function Test
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Urine Analysis" /> Urine Analysis
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Electrolyte Panel" /> Electrolyte Panel
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Coagulation Tests" /> Coagulation Tests
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Vitamin D Test" /> Vitamin D Test
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Pregnancy Test" /> Pregnancy Test
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="COVID-19 Test" /> COVID-19 Test
+            </label>
+            <label>
+              <input type="checkbox" name="labTests" value="Cholesterol Test" /> Cholesterol Test
+            </label>
+          </div>
         </div>
-       
-        <div className="mb-3">
-          <label htmlFor="testDate" className="form-label">Test Date</label>
-          <input
-            type="date"
-            className="form-control"
-            id="testDate"
-            aria-describedby="testDateHelp"
-            value={formData.testDate}
-            onChange={handleChange}
-          />
-          <div id="testDateHelp" className="form-text">Enter the date of the test</div>
+
+        <div className="form-group">
+          <label htmlFor="notes">Additional Notes:</label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            placeholder="Enter any additional instructions or notes..."
+          ></textarea>
         </div>
-        <div className="mb-3">
-          <label htmlFor="testTime" className="form-label">Test Time</label>
-          <input
-            type="time"
-            className="form-control"
-            id="testTime"
-            aria-describedby="testTimeHelp"
-            value={formData.testTime}
-            onChange={handleChange}
-          />
-          <div id="testTimeHelp" className="form-text">Enter the time of the test</div>
+        
+        <div className="form-group">
+          <button type="submit">Submit Request</button>
         </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     </div>
+    </div>
+    
   );
 };
 
-export default PtaientLabTestForm;
+export default PatientLabTestForm;

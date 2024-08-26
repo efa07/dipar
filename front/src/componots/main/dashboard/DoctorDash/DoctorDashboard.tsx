@@ -1,7 +1,6 @@
 import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
-import Logo from "./3496352.jpg";
-
+import Logo from "./user .png";
 
 const DoctorDashboard = () => {
   const [patientData, setPatientData] = useState(null);
@@ -115,25 +114,10 @@ const DoctorDashboard = () => {
             <p><strong>Contact:</strong> {patientData.contact}</p>
             <p><strong>Email:</strong> {patientData.email}</p>
             </div>
-           
-            
+
           </div>
           
-          <div className="appointment-history">
-            <h3>Appointment History</h3>
-            {patientData.appointments.length > 0 ? (
-              patientData.appointments.map((appointment, index) => (
-                <div key={index} className="appointment-item">
-                  <p><strong>Date:</strong> {appointment.date}</p>
-                  <p><strong>Doctor:</strong> {appointment.doctor}</p>
-                  <p><strong>Notes:</strong> {appointment.notes}</p>
-                </div>
-              ))
-            ) : (
-              <p>No appointment history available.</p>
-            )}
-          </div>
-
+          <div className="patient-info">
           <div className="medical-records-history">
             <h3>Medical Records</h3>
             {patientData.medicalRecords.length > 0 ? (
@@ -149,8 +133,10 @@ const DoctorDashboard = () => {
               <p>No medical records available.</p>
             )}
           </div>
-
-          <div className="test-results-history">
+          </div>
+         
+         <div className="patient-info">
+ <div className="test-results-history">
             <h3>Test Results</h3>
             {patientData.testResults.length > 0 ? (
               patientData.testResults.map((test, index) => (
@@ -165,7 +151,9 @@ const DoctorDashboard = () => {
               <p>No test results available.</p>
             )}
           </div>
-
+         </div>
+         
+         <div className="patient-info">
           <div className="prescriptions-history">
             <h3>Prescriptions</h3>
             {patientData.prescriptions.length > 0 ? (
@@ -182,6 +170,9 @@ const DoctorDashboard = () => {
               <p>No prescriptions available.</p>
             )}
           </div>
+</div>
+
+<div className="patient-info">
 
           <div className="ongoing-treatments">
             <h3>Ongoing Treatments</h3>
@@ -198,9 +189,11 @@ const DoctorDashboard = () => {
               <p>No ongoing treatments available.</p>
             )}
           </div>
+</div>
 
-          <div className="allergies">
-            <h3>Allergies</h3>
+          <div className="patient-info">
+              <div className="allergies">
+              <h3>Allergies</h3>
             {patientData.allergies.length > 0 ? (
               <ul>
                 {patientData.allergies.map((allergy, index) => (
@@ -208,21 +201,14 @@ const DoctorDashboard = () => {
                 ))}
               </ul>
             ) : (
-              <ScaleLoader
-  color="#17e9b1"
-  height={10}
-  width={6}
-/>
+              <p>No allergies reported.</p>
             )}
           </div>
+          </div>
+         
         </>
       ) : (
-        <ScaleLoader
-  color="#17e9b1"
-  height={10}
-  width={6}
-  
-/>
+        <p>Loading patient data...</p>
       )}
     </div>
   );

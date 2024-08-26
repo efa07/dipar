@@ -1,38 +1,39 @@
-
+.dap{
+height: auto;
+}
 .appointment-item {
     border: 1px solid var(--second);
     padding: 16px;
-    margin-bottom: 16px;
     border-radius: 8px;
     background-color: var(--bg-light);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 0 auto 16px;}
-    
-  
-    .ap{
-      transition: all 0.3s;
-      background-image: radial-gradient(var(--MossGreen) 1px, transparent 1px);
-      background-size: 10px 10px;
-
+    margin: 0 auto 16px;
+  }
+    .dap{
+      background-color: #fff;
+      padding: 25px;
+      margin-top: 60px;
+      border-radius: 20px;
+      box-shadow: 0 10px 10px rgba(1, 111, 0, 0.3);
+      height: 100vh;
     }
-.ap h1 {
-    font-size: 24px;
+.dap h1 {
+    font-size: 34px;
     color: #333;
     margin-bottom: 24px;
     text-align: center;
   }
-  
- .ap p {
+ .dap p {
     margin: 8px 0;
     font-size: 16px;
     color: #555;
   }
   
-.ap strong {
+.dap strong {
     color: #333;
   }
   
- .ap div {
+ .dap div {
     padding: 16px;
   }
   

@@ -2,7 +2,8 @@ import "./mr.css"
 const MedicalRecords = () => {
   return (
     <div>
-        <div className="medical-records">
+      <div className="dmr">
+             <div className="medical-records">
             <h3>Medical Records</h3>
             <div className="medical-record-item">
             <p><strong>Date:</strong> 12/12/2021</p>
@@ -24,6 +25,8 @@ const MedicalRecords = () => {
             </div>
         </div>
     </div>
+      </div>
+   
   )
 }
 
