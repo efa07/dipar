@@ -1,4 +1,4 @@
-import "./ts.css"
+import "./testresult.css"
 
 const TestResult = () => {
   return (

@@ -1,6 +1,7 @@
-import "./dd.css";
+import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
 import Logo from "./3496352.jpg";
+
 
 const DoctorDashboard = () => {
   const [patientData, setPatientData] = useState(null);
@@ -101,7 +102,10 @@ const DoctorDashboard = () => {
         <>
           <div className="patient-info">
             <h3>Patient Information</h3>
+            <div className="imgName">
             <img src={Logo} alt="Patient Avatar" />
+            </div>
+            <div className="info">
             <p><strong>Name:</strong> {patientData.name}</p>
             <p><strong>Age:</strong> {patientData.age}</p>
             <p><strong>Gender:</strong> {patientData.gender}</p>
@@ -110,6 +114,9 @@ const DoctorDashboard = () => {
             <p><strong>Allergies:</strong> {patientData.allergies.join(", ")}</p>
             <p><strong>Contact:</strong> {patientData.contact}</p>
             <p><strong>Email:</strong> {patientData.email}</p>
+            </div>
+           
+            
           </div>
           
           <div className="appointment-history">
@@ -201,12 +208,21 @@ const DoctorDashboard = () => {
                 ))}
               </ul>
             ) : (
-              <p>No allergies reported.</p>
+              <ScaleLoader
+  color="#17e9b1"
+  height={10}
+  width={6}
+/>
             )}
           </div>
         </>
       ) : (
-        <p>Loading patient data...</p>
+        <ScaleLoader
+  color="#17e9b1"
+  height={10}
+  width={6}
+  
+/>
       )}
     </div>
   );

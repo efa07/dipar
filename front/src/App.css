@@ -3,7 +3,7 @@
   --primary: #41B8AF;
   --second: #95D7A1;
   --bg: #333;
-  --bg-light: #e9f7ef;
+  --bg-light: #F5F7FA;
   --red:#F7493C;
   --bg-blue:#316F79;
   
@@ -14,29 +14,26 @@
 --Pear-Green: #d9e4e1;
 
 }
-body{
-  background-color: var(--bg-light);
-  color: var(--bg);
+
+*{
+  font-family: 'Roboto', sans-serif;
 }
 
+
 .sidebarapp {
-  width: 251px; 
-  background-color: var(--bg-light); 
   position: fixed;
   top: 0;
   left: 0;
-  height: 100%;}
-
+  height: 100%;
+}
 .main-content{
-  width: 50em;
-  border: 1px solid red;
+  scale: 0.95;
+  width: calc(100vw - 251px);
   float: right;
-  margin-top: 70px;
-  padding: 20px 30px;
+  font-family:'Times New Roman', Times, serif;
   transition: all 0.3s;
   background-color: var(--bg-light);
-  background-image: radial-gradient(var(--MossGreen) 1px, transparent 1px);
-  background-size: 10px 10px;
+ 
 }
 @media (max-width:1199px){
   .main-content{

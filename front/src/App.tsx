@@ -9,7 +9,6 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import Header from "./componots/Nav/Header";
 import Sidebar from "./componots/sidebar/Sidebar";
 import Dashboard from "./componots/main/dashboard/DashBoard"
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import TodoApp from "./componots/test/Test";
 
@@ -24,6 +23,7 @@ function App() {
         </div>
         <main className="main-content">
           <Routes>
+            <Route path="/" element={<Dashboard />} />
             <Route path="/doctor/*" element={<Dashboard />} />
             <Route path="/nurse/*" element={<Dashboard />} />
             <Route path="/medicallab/*" element={<Dashboard />} />

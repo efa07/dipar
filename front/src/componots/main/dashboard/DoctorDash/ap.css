@@ -7,9 +7,13 @@
     background-color: var(--bg-light);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 0 auto 16px;}
+    
   
     .ap{
       transition: all 0.3s;
+      background-image: radial-gradient(var(--MossGreen) 1px, transparent 1px);
+      background-size: 10px 10px;
+
     }
 .ap h1 {
     font-size: 24px;

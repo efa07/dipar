@@ -1,0 +1,13 @@
+.welcome{
+    width: 100%;
+    margin-top: 0;
+    height: 100vh;
+    display: flex;
+    border : 1px solid var(--second);
+}
+@media (max-width: 800px){
+    .welcome{
+        margin-top: 30px;
+        padding-top: 30px;
+    }
+}

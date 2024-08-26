@@ -11,6 +11,7 @@ import PtaientLabTestForm from './DoctorDash/PtaientLabTestForm';
 
 import ReceptionistDashboard from './RegisterDash/ReceptionistDashboard';
 import MedicalRecordForm from './RegisterDash/MedicalRecordForm';
+import Welcom from "./welcom/Welcom";
 import "./dashboard.css";
 
 const Dashboard = () => {
@@ -30,6 +31,7 @@ const Dashboard = () => {
         
         <Route path="/new" element={<ReceptionistDashboard />} />
         <Route path='/register/medicalRecords' element={<MedicalRecordForm />} />
+        <Route path="welcom" element={<Welcom />} />
        
 
 

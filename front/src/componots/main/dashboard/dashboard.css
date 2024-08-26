@@ -1,11 +1,6 @@
 .dashboard-content{
-    padding: 20px 30px;
     transition: all 0.3s;
     width: 100%;
+    font-family: 'Roboto', sans-serif;
     background: transparent;
-}
-@media (max-width:1199px){
-    .dash{
-        padding: 20px;
-    }
 }

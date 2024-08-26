@@ -3,7 +3,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin:auto;
 
+}
+.header-nav{
+    font-size: 15px;
+    margin-right: 2em;
+    width: 25%;
+    color: #00BCD4;
 }
 .bi-list{
   font-size: 35px;
@@ -16,16 +23,17 @@
 .header-nav{
     font-size: 15px;
     margin-right: 2em;
-    color: var(--primary);
-    width: 12%;
+    width: 25%;
+    color: #00BCD4;
 }
 
 @media (max-width: 760px) {
     .header-nav {
       font-size: 15px;
       margin-right: 2em;
-      color: var(--primary);
       width: 30%;
+      color: #00BCD4;
+
     }
     
   .not{
