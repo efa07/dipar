@@ -1,0 +1,85 @@
+
+  .dashboard-container{
+    margin-top: 80px;
+    display: flex;
+    width: 100%;
+
+  }
+  
+  .dashboard-sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dashboard-sidebar li {
+    margin-bottom: 15px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .dashboard-sidebar li:hover {
+    background-color: #495057;
+  }
+  
+  .dashboard-main {
+    grid-area: main;
+    padding: 20px;
+    width: 100%;
+    border-radius: 20px;
+    background-color: #e9ecef;
+    overflow-y: auto;
+  }
+  
+  .section {
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section h2 {
+    margin-top: 0;
+  }
+  
+  .patient-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .tasks-reminders ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .tasks-reminders li {
+    background-color: #f8d7da;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  .medication-administration table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .medication-administration th,
+  .medication-administration td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .medication-administration th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .medication-administration tr:hover {
+    background-color: #f1f1f1;
+  }
+  

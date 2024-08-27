@@ -23,11 +23,7 @@ const sidebarItems = [
         text: "Add Lab Test",
         to: "/doctor/lab-test/add", 
       },
-      {
-        icon: <i className="fi fi-tr-hospital-user"></i>,
-        text: "Test Results",
-        to: "/doctor/lab-test/results",
-      },
+   
     ],
   },
   {
