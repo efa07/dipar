@@ -13,7 +13,6 @@ import ReceptionistDashboard from './RegisterDash/ReceptionistDashboard';
 import MedicalRecordForm from './RegisterDash/MedicalRecordForm';
 import Welcom from "./welcom/Welcom";
 import AppointmentSchedulingForm from './RegisterDash/Appointment';
-import EmergencyRegistrationForm from './RegisterDash/EmergencyRegistration';
 import ReceptionUserProfileSettings from './RegisterDash/ReceptionProfile';
 
 import NurseDash from "./NurseDash/NurseDash"
@@ -46,7 +45,6 @@ const Dashboard = () => {
         <Route path='/medicalRecords' element={<MedicalRecordForm />} />
         <Route path="welcom" element={<Welcom />} />
         <Route path="/appointment" element={<AppointmentSchedulingForm />} />
-       <Route path='/emergency' element={<EmergencyRegistrationForm />} />
        <Route path="/profile" element={<ReceptionUserProfileSettings/>}/>
 
        <Route path='nurseDash' element={<NurseDash />} />
