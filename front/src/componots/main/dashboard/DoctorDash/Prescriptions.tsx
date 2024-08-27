@@ -1,7 +1,7 @@
 import "./pp.css"
 const Prescriptions = () => {
   return (
-    <div>
+    <div className="pre">
         <div className="prescriptions">
             <h3>Prescriptions</h3>
             <div className="prescription-item">

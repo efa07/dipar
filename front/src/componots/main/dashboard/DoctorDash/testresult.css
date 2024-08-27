@@ -1,9 +1,9 @@
 
 .test-results {
     padding: 20px;
-    background-color: var(--Celadon-Green);
+    background-color: var(--bg-light);
     border-radius: 10px;
-    max-width: 100%;
+    height: auto;
   }
   
   .test-results h3 {
@@ -18,7 +18,7 @@
     padding: 16px;
     margin-bottom: 16px;
     border-radius: 8px;
-    background-color: var(--bg-light);
+    background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   

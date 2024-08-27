@@ -21,6 +21,9 @@
   margin-bottom: 20px;
  
 }
+.patient-info strong {
+  color: var(--primary);
+}
 .info{
   width: 50%;
 }
@@ -47,7 +50,6 @@
 }
 .patient-info h3 {
   width: 30%;
-  color: #333;
 color: var(--bg-blue);
 }
 
@@ -72,7 +74,6 @@ color: var(--bg-blue);
   margin-bottom: 10px;
 }
 
-/* Individual item styles */
 .appointment-item,
 .medical-record-item,
 .test-result-item,

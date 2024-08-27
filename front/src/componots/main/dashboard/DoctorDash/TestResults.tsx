@@ -2,7 +2,7 @@ import "./testresult.css"
 
 const TestResult = () => {
   return (
-    <div>
+    <div className="test">
         <div className="test-results">
             <h3>Test Results</h3>
             <div className="test-result-item">
