@@ -8,7 +8,6 @@ function EmergencyRegistrationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send form data to the backend
-    // ...
   };
 
   const handleChange = (e) => {
@@ -23,7 +22,6 @@ function EmergencyRegistrationForm() {
 <div className="emergency-form">
       <h2>Emergency Registration Form</h2>
       <form onSubmit={handleSubmit}>
-        {/* Patient Information */}
         <div className="form-group">
           <label htmlFor="name">Full Name:</label>
           <input
@@ -35,9 +33,7 @@ function EmergencyRegistrationForm() {
             required
           />
         </div>
-        {/* ... other patient information fields */}
 
-        {/* Emergency Contact */}
         <div className="form-group">
           <label htmlFor="emergencyContactName">Emergency Contact Name:</label>
           <input
@@ -49,9 +45,7 @@ function EmergencyRegistrationForm() {
             required
           />
         </div>
-        {/* ... other emergency contact fields */}
 
-        {/* Medical History */}
         <div className="form-group">
           <label htmlFor="allergies">Allergies:</label>
           <textarea
@@ -62,9 +56,7 @@ function EmergencyRegistrationForm() {
             onChange={handleChange}
           />
         </div>
-        {/* ... other medical history fields */}
 
-        {/* Symptoms */}
         <div className="form-group">
           <label htmlFor="symptoms">Symptoms:</label>
           <textarea

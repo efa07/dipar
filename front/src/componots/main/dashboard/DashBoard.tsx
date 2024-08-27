@@ -16,13 +16,19 @@ import AppointmentSchedulingForm from './RegisterDash/Appointment';
 import EmergencyRegistrationForm from './RegisterDash/EmergencyRegistration';
 import ReceptionUserProfileSettings from './RegisterDash/ReceptionProfile';
 
+import NurseDash from "./NurseDash/NurseDash"
+import NursePatient from "./NurseDash/NursePatient"
+import PatientManagment from "./NurseDash/PatientManagment"
+import PatientManagmentNote from './NurseDash/PatientManagmentNote';
 import "./dashboard.css";
 
 const Dashboard = () => {
   return (
     <div className="dashboard-content">
+      /
       <Routes>
-        <Route path="dashboard" element={<DoctorDashboard />} />
+        
+        <Route path="dashboard" element={<DoctorDashboard />} /> 
         <Route path="appointments" element={<Appointments />} />
         <Route path="medical-records" element={<MedicalRecords />} />
         <Route path="prescriptions" element={<Prescriptions />} />
@@ -40,6 +46,10 @@ const Dashboard = () => {
        <Route path='/emergency' element={<EmergencyRegistrationForm />} />
        <Route path="/profile" element={<ReceptionUserProfileSettings/>}/>
 
+       <Route path='nurseDash' element={<NurseDash />} />
+       <Route path="patient-management/vitals" element={<NursePatient />} />
+        <Route path='patient-management/medication' element={<PatientManagment/>}/>
+        <Route path='patient-management/notes' element={<PatientManagmentNote />} />
 
       </Routes>
     </div>

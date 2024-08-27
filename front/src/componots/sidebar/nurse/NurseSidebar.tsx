@@ -1,15 +1,11 @@
-import './nurse.css'; // Make sure to have appropriate styles for nurse sidebar
+import './nurse.css'; 
+import { Link } from 'react-router-dom';
 
 const nurseSidebarItems = [
   {
     icon: "bi bi-speedometer2",
     text: "Dashboard",
-    href: "/dashboard",
-  },
-  {
-    icon: "bi bi-calendar-event",
-    text: "Appointments",
-    href: "/appointments",
+    to: "/nurse/nurseDash",
   },
   {
     icon: "bi bi-person-lines-fill",
@@ -17,51 +13,37 @@ const nurseSidebarItems = [
     collapseId: "patient-management-nav",
     subItems: [
       {
-        icon: <i className="bi bi-thermometer"></i>, // Vital signs icon
+        icon: <i className="bi bi-thermometer"></i>, 
         text: "View Vital Signs",
-        href: "/patient-management/vitals",
+        to: "/nurse/patient-management/vitals",
       },
       {
-        icon: <i className="bi bi-bandaid-fill"></i>, // Medication icon
+        icon: <i className="bi bi-bandaid-fill"></i>, 
         text: "Administer Medication",
-        href: "/patient-management/medication",
+        to: "/nurse/patient-management/medication",
       },
       {
-        icon: <i className="bi bi-clipboard-check"></i>, // Notes icon
+        icon: <i className="bi bi-clipboard-check"></i>,
         text: "Add Patient Notes",
-        href: "/patient-management/notes",
-      },
-      {
-        icon: <i className="bi bi-person-check-fill"></i>, // Manage patients icon (optional)
-        text: "Manage Patients", // Can be removed or linked to specific management functionality
-        href: "/patient-management/manage", // Update href if needed
+        to: "/nurse/patient-management/notes",
       },
     ],
   },
   {
     icon: "bi bi-file-earmark-medical",
     text: "Medical Records",
-    href: "/medical-records",
+    to: "/nurse/medical-records",
   },
-  {
-    icon: "bi bi-chat-dots",
-    text: "Messages",
-    href: "/messages",
-  },
+
   {
     icon: "bi bi-check-circle",
     text: "Tasks",
-    href: "/tasks",
+    to: "/nurse/tasks",
   },
   {
     icon: "bi bi-person-circle",
     text: "Profile and Settings",
-    href: "/profile-settings",
-  },
-  {
-    icon: "bi bi-question-circle",
-    text: "Help and Support",
-    href: "/help",
+    to: "/nurse/profile-settings",
   },
 ];
 
@@ -76,34 +58,34 @@ const NurseSidebar = () => {
         <li className="nav-item" key={index}>
           {item.subItems ? (
             <>
-              <a
+              <Link
                 className="nav-link collapsed"
                 data-bs-toggle="collapse"
                 data-bs-target={`#${item.collapseId}`}
                 aria-expanded="false"
                 aria-controls={item.collapseId}
-                href="#"
+                to="#"
               >
                 <i className={item.icon}></i>
                 <span className="ms-2">{item.text}</span>
                 <i className="bi bi-chevron-down ms-auto"></i>
-              </a>
+              </Link>
               <ul id={item.collapseId} className="nav-content collapse" style={style}>
                 {item.subItems.map((subItem, subIndex) => (
                   <li key={subIndex}>
-                    <a href={subItem.href} className="nav-link">
+                    <Link to={subItem.to} className="nav-link">
                       {subItem.icon}
                       <span className="ms-2">{subItem.text}</span>
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </>
           ) : (
-            <a className="nav-link" href={item.href}>
+            <Link className="nav-link" to={item.to}>
               <i className={item.icon}></i>
               <span className="ms-2">{item.text}</span>
-            </a>
+            </Link>
           )}
         </li>
       ))}
