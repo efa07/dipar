@@ -20,6 +20,9 @@ import NurseDash from "./NurseDash/NurseDash"
 import NursePatient from "./NurseDash/NursePatient"
 import PatientManagment from "./NurseDash/PatientManagment"
 import PatientManagmentNote from './NurseDash/PatientManagmentNote';
+
+import MedicalLabPage from './medicalLab/LabTest';
+import MedicalStaffTestResultPage from './medicalLab/MedicalStaffTestResultPage';
 import "./dashboard.css";
 
 const Dashboard = () => {
@@ -51,6 +54,8 @@ const Dashboard = () => {
         <Route path='patient-management/medication' element={<PatientManagment/>}/>
         <Route path='patient-management/notes' element={<PatientManagmentNote />} />
 
+        <Route path='/lab-tests' element={<MedicalLabPage />} />
+        <Route path="lab-test-results" element={<MedicalStaffTestResultPage />} />
       </Routes>
     </div>
   );

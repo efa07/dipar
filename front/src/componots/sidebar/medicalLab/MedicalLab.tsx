@@ -1,49 +1,22 @@
-import './medical.css'; // Make sure to have appropriate styles here
-
+import './medical.css'; 
+import { Link } from 'react-router-dom';
 const medicalLabItems = [
   {
     icon: "bi bi-microscope",
     text: "Lab Tests",
-    href: "/lab-tests",
-   
+    to: "lab-tests",
 
   },
   {
     icon: "bi bi-clipboard-data",
     text: "Test Results",
-    href: "/test-results",
+    to: "lab-test-results",
   },
-  {
-    icon: "bi bi-person-lines-fill",
-    text: "Patient Management",
-    collapseId: "patient-management-nav",
-    subItems: [
-      {
-        icon: <i className="bi bi-person-plus-fill"></i>,
-        text: "Add New Patient",
-        href: "/patient-management/add",
-      },
-      {
-        icon: <i className="bi bi-person-check-fill"></i>,
-        text: "Manage Patients",
-        href: "/patient-management/manage",
-      },
-    ],
-  },
-  {
-    icon: "bi bi-file-earmark-medical",
-    text: "Medical Records",
-    href: "/medical-records",
-  },
+ 
   {
     icon: "bi bi-person-circle",
     text: "Profile and Settings",
-    href: "/profile-settings",
-  },
-  {
-    icon: "bi bi-question-circle",
-    text: "Help and Support",
-    href: "/help",
+    to: "profile-settings",
   },
 ];
 
@@ -53,43 +26,47 @@ const MedicalLab = () => {
   };
 
   return (
-    <ul className="sidebar-nav mt-5" id="sidebar-nav">
+
+
+<ul className="sidebar-nav mt-5" id="sidebar-nav">
       {medicalLabItems.map((item, index) => (
         <li className="nav-item" key={index}>
           {item.subItems ? (
             <>
-              <a
+              <Link
                 className="nav-link collapsed"
                 data-bs-toggle="collapse"
                 data-bs-target={`#${item.collapseId}`}
                 aria-expanded="false"
                 aria-controls={item.collapseId}
-                href="#"
+                to="#"
               >
                 <i className={item.icon}></i>
                 <span className="ms-2">{item.text}</span>
                 <i className="bi bi-chevron-down ms-auto"></i>
-              </a>
+              </Link>
               <ul id={item.collapseId} className="nav-content collapse" style={style}>
                 {item.subItems.map((subItem, subIndex) => (
                   <li key={subIndex}>
-                    <a href={subItem.href} className="nav-link">
+                    <Link to={subItem.to} className="nav-link">
                       {subItem.icon}
                       <span className="ms-2">{subItem.text}</span>
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </>
           ) : (
-            <a className="nav-link" href={item.href}>
+            <Link className="nav-link" to={item.to}>
               <i className={item.icon}></i>
               <span className="ms-2">{item.text}</span>
-            </a>
+            </Link>
           )}
         </li>
       ))}
     </ul>
+  
+    
   );
 };
 
