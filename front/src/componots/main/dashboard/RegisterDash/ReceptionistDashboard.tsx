@@ -16,19 +16,20 @@ const ReceptionistDashboard = () => {
     relationship: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: 
+   value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: ) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/patients', {  // Updated URL
+      const response = await fetch('http://127.0.0.1:5000/api/patients', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
