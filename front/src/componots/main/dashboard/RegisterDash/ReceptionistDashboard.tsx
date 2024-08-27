@@ -1,8 +1,22 @@
 import { useState } from 'react';
 import "./rdb.css";
 
-const ReceptionistDashboard = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  firstName: string;
+  lastName: string;
+  dob: string;
+  gender: string;
+  email: string;
+  city: string;
+  state: string;
+  zip: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  relationship: string;
+}
+
+const ReceptionistDashboard: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     dob: "",
@@ -16,18 +30,13 @@ const ReceptionistDashboard = () => {
     relationship: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: 
-   value,
-    });
+    setFormData({...formData, [name]: value, });
   };
 
-  const handleSubmit = async (e: ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const response = await fetch('http://127.0.0.1:5000/api/patients', {
         method: 'POST',
