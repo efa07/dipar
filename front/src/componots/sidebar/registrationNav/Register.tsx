@@ -34,11 +34,7 @@ const sidebarItems = [
       text: "Medical Records",
       href: "/register/medicalRecords"
     },
-    {
-      icon: "bi bi-person",
-      text: "Profile",
-      href: "/register/profile",
-    },
+  
 ];
 
 const Register = () => {

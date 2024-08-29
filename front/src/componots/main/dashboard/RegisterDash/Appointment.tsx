@@ -46,10 +46,12 @@ function AppointmentForm() {
       });
 
       if (!response.ok) {
+        alert("Failed to schedule appointment. Please try again.");
         throw new Error('Failed to schedule appointment. Please try again.');
       }
 
       const result = await response.json();
+      alert("Appointment scheduled successfully.");
       setSuccessMessage(result.message || 'Appointment scheduled successfully.');
     } catch (error: any) {
       setErrorMessage(error.message);

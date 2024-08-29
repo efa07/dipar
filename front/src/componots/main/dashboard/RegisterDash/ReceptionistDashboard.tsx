@@ -63,6 +63,7 @@ const ReceptionistDashboard: React.FC = () => {
         });
       } else {
         alert("Registration failed")
+        
       }
     } catch (error) {
       console.error('Error occurred while registering:', error);
