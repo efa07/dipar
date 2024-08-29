@@ -1,214 +1,66 @@
 import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
-import Logo from "./user .png";
+import Logo from "./user .png"; // Make sure the path is correct for your image
 
 const DoctorDashboard = () => {
-  const [patientData, setPatientData] = useState(null);
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPatientData = async () => {
-      const data = {
-        name: "Abebe Kebede",
-        age: 45,
-        gender: "Male",
-        country: "Addis Ababa, Ethiopia",
-        bloodType: "O+",
-        allergies: ["Peanuts", "Penicillin"],
-        contact: "+251-121-121-1",
-        email: "abebe.kabe@example.com",
-        appointments: [
-          {
-            date: "2024-05-14",
-            doctor: "Dr. someone",
-            notes: "Follow-up on blood pressure medication.",
-          },
-          {
-            date: "2024-04-20",
-            doctor: "Dr. Adams",
-            notes: "Routine annual check-up.",
-          },
-        ],
-        medicalRecords: [
-          {
-            date: "2024-03-10",
-            diagnosis: "Hypertension",
-            treatment: "Prescribed blood pressure medication.",
-            notes: "Monitor blood pressure daily.",
-          },
-          {
-            date: "2023-11-05",
-            diagnosis: "Type 2 Diabetes",
-            treatment: "Started on metformin.",
-            notes: "Recommended dietary changes and exercise.",
-          },
-        ],
-        testResults: [
-          {
-            date: "2024-06-01",
-            type: "Blood Test",
-            result: "Cholesterol levels are slightly elevated.",
-            notes: "Consider dietary modifications.",
-          },
-          {
-            date: "2024-02-15",
-            type: "X-Ray",
-            result: "Normal chest X-ray.",
-            notes: "No abnormalities detected.",
-          },
-        ],
-        prescriptions: [
-          {
-            date: "2024-06-15",
-            medication: "Metformin",
-            dosage: "500mg",
-            frequency: "Twice daily",
-            doctor: "Dr. Jones",
-          },
-          {
-            date: "2024-05-10",
-            medication: "Lisinopril",
-            dosage: "10mg",
-            frequency: "Once daily",
-            doctor: "Dr. Smith",
-          },
-        ],
-        ongoingTreatments: [
-          {
-            startDate: "2023-11-10",
-            type: "Physical Therapy",
-            status: "Ongoing",
-            notes: "Scheduled for twice a week.",
-          },
-          {
-            startDate: "2024-04-01",
-            type: "Diabetes Management",
-            status: "Active",
-            notes: "Regular monitoring of blood glucose levels.",
-          },
-        ],
-      };
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/patients"); // Replace with your actual backend API URL
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-      setPatientData(data);
+        const data = await response.json();
+        setPatients(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchPatientData();
   }, []);
 
+  if (loading) {
+    return <p>Loading patient data...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading data: {error}</p>;
+  }
+
   return (
     <div className="doctor-dashboard">
       <h2>Patient Dashboard</h2>
-      {patientData ? (
-        <>
-          <div className="patient-info">
+      {patients.length > 0 ? (
+        patients.map(patient => (
+          <div key={patient.id} className="patient-info">
             <h3>Patient Information</h3>
             <div className="imgName">
-            <img src={Logo} alt="Patient Avatar" />
+              <img src={Logo} alt="Patient Avatar" />
             </div>
             <div className="info">
-            <p><strong>Name:</strong> {patientData.name}</p>
-            <p><strong>Age:</strong> {patientData.age}</p>
-            <p><strong>Gender:</strong> {patientData.gender}</p>
-            <p><strong>Country:</strong> {patientData.country}</p>
-            <p><strong>Blood Type:</strong> {patientData.bloodType}</p>
-            <p><strong>Allergies:</strong> {patientData.allergies.join(", ")}</p>
-            <p><strong>Contact:</strong> {patientData.contact}</p>
-            <p><strong>Email:</strong> {patientData.email}</p>
+              <p><strong>Name:</strong> {patient.firstName} {patient.lastName}</p>
+              <p><strong>Date of Birth:</strong> {new Date(patient.dob).toLocaleDateString()}</p>
+              <p><strong>Gender:</strong> {patient.gender}</p>
+              <p><strong>City:</strong> {patient.city}</p>
+              <p><strong>State:</strong> {patient.state}</p>
+              <p><strong>Zip Code:</strong> {patient.zip}</p>
+              <p><strong>Email:</strong> {patient.email}</p>
+              <p><strong>Emergency Contact Name:</strong> {patient.emergencyContactName}</p>
+              <p><strong>Emergency Contact Phone:</strong> {patient.emergencyContactPhone}</p>
+              <p><strong>Relationship:</strong> {patient.relationship}</p>
             </div>
-
           </div>
-          
-          <div className="patient-info">
-          <div className="medical-records-history">
-            <h3>Medical Records</h3>
-            {patientData.medicalRecords.length > 0 ? (
-              patientData.medicalRecords.map((record, index) => (
-                <div key={index} className="medical-record-item">
-                  <p><strong>Date:</strong> {record.date}</p>
-                  <p><strong>Diagnosis:</strong> {record.diagnosis}</p>
-                  <p><strong>Treatment:</strong> {record.treatment}</p>
-                  <p><strong>Doctor's Notes:</strong> {record.notes}</p>
-                </div>
-              ))
-            ) : (
-              <p>No medical records available.</p>
-            )}
-          </div>
-          </div>
-         
-         <div className="patient-info">
- <div className="test-results-history">
-            <h3>Test Results</h3>
-            {patientData.testResults.length > 0 ? (
-              patientData.testResults.map((test, index) => (
-                <div key={index} className="test-result-item">
-                  <p><strong>Date:</strong> {test.date}</p>
-                  <p><strong>Type:</strong> {test.type}</p>
-                  <p><strong>Result:</strong> {test.result}</p>
-                  <p><strong>Notes:</strong> {test.notes}</p>
-                </div>
-              ))
-            ) : (
-              <p>No test results available.</p>
-            )}
-          </div>
-         </div>
-         
-         <div className="patient-info">
-          <div className="prescriptions-history">
-            <h3>Prescriptions</h3>
-            {patientData.prescriptions.length > 0 ? (
-              patientData.prescriptions.map((prescription, index) => (
-                <div key={index} className="prescription-item">
-                  <p><strong>Date:</strong> {prescription.date}</p>
-                  <p><strong>Medication:</strong> {prescription.medication}</p>
-                  <p><strong>Dosage:</strong> {prescription.dosage}</p>
-                  <p><strong>Frequency:</strong> {prescription.frequency}</p>
-                  <p><strong>Prescribing Doctor:</strong> {prescription.doctor}</p>
-                </div>
-              ))
-            ) : (
-              <p>No prescriptions available.</p>
-            )}
-          </div>
-</div>
-
-<div className="patient-info">
-
-          <div className="ongoing-treatments">
-            <h3>Ongoing Treatments</h3>
-            {patientData.ongoingTreatments.length > 0 ? (
-              patientData.ongoingTreatments.map((treatment, index) => (
-                <div key={index} className="treatment-item">
-                  <p><strong>Start Date:</strong> {treatment.startDate}</p>
-                  <p><strong>Type:</strong> {treatment.type}</p>
-                  <p><strong>Status:</strong> {treatment.status}</p>
-                  <p><strong>Notes:</strong> {treatment.notes}</p>
-                </div>
-              ))
-            ) : (
-              <p>No ongoing treatments available.</p>
-            )}
-          </div>
-</div>
-
-          <div className="patient-info">
-              <div className="allergies">
-              <h3>Allergies</h3>
-            {patientData.allergies.length > 0 ? (
-              <ul>
-                {patientData.allergies.map((allergy, index) => (
-                  <li key={index}>{allergy}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No allergies reported.</p>
-            )}
-          </div>
-          </div>
-         
-        </>
+        ))
       ) : (
-        <p>Loading patient data...</p>
+        <p>No patient data available.</p>
       )}
     </div>
   );

@@ -2,7 +2,21 @@ import './doctor.css';
 import { Link } from 'react-router-dom'; 
 import { useState } from 'react';
 
-const sidebarItems = [
+interface SubItem {
+  icon: JSX.Element;
+  text: string;
+  to: string;
+}
+
+interface SidebarItem {
+  icon: string;
+  text: string;
+  to?: string;
+  collapseId?: string;
+  subItems?: SubItem[];
+}
+
+const sidebarItems: SidebarItem[] = [
   {
     icon: "bi bi-speedometer2",
     text: "Dashboard",
@@ -23,7 +37,6 @@ const sidebarItems = [
         text: "Add Lab Test",
         to: "/doctor/lab-test/add", 
       },
-   
     ],
   },
   {
@@ -56,17 +69,13 @@ const sidebarItems = [
     text: "Profile and Settings",
     to: "/doctor/profile-settings",
   },
-  {
-    icon: "bi bi-question-circle",
-    text: "Help and Support",
-    to: "/doctor/help",
-  },
+ 
 ];
 
-const DoctorSidebar = () => {
-  const [openItems, setOpenItems] = useState({});
+const DoctorSidebar: React.FC = () => {
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
-  const toggleItem = (collapseId) => {
+  const toggleItem = (collapseId: string) => {
     setOpenItems(prev => ({ ...prev, [collapseId]: !prev[collapseId] }));
   };
 
@@ -78,15 +87,15 @@ const DoctorSidebar = () => {
             <>
               <div
                 className="nav-link collapsed"
-                onClick={() => toggleItem(item.collapseId)}
-                aria-expanded={openItems[item.collapseId] ? "true" : "false"}
+                onClick={() => toggleItem(item.collapseId!)}
+                aria-expanded={openItems[item.collapseId!] ? "true" : "false"}
                 aria-controls={item.collapseId}
               >
                 <i className={item.icon}></i>
                 <span className="ms-2">{item.text}</span>
-                <i className={`bi bi-chevron-${openItems[item.collapseId] ? "up" : "down"} ms-auto`}></i>
+                <i className={`bi bi-chevron-${openItems[item.collapseId!] ? "up" : "down"} ms-auto`}></i>
               </div>
-              <ul id={item.collapseId} className={`nav-content collapse ${openItems[item.collapseId] ? "show" : ""}`}>
+              <ul id={item.collapseId} className={`nav-content collapse ${openItems[item.collapseId!] ? "show" : ""}`}>
                 {item.subItems.map((subItem, subIndex) => (
                   <li key={subIndex}>
                     <Link to={subItem.to} className="nav-link">
@@ -98,7 +107,7 @@ const DoctorSidebar = () => {
               </ul>
             </>
           ) : (
-            <Link className="nav-link" to={item.to}>
+            <Link className="nav-link" to={item.to!}>
               <i className={item.icon}></i>
               <span className="ms-2">{item.text}</span>
             </Link>

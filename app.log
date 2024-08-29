@@ -445,3 +445,75 @@ ERROR:root:Email efatariku07@gmail.com already exists
 INFO:werkzeug:127.0.0.1 - - [28/Aug/2024 21:55:52] "[31m[1mPOST /api/patients HTTP/1.1[0m" 409 -
 INFO:werkzeug:127.0.0.1 - - [28/Aug/2024 22:01:12] "OPTIONS /api/patients HTTP/1.1" 200 -
 INFO:werkzeug:127.0.0.1 - - [28/Aug/2024 22:01:13] "[35m[1mPOST /api/patients HTTP/1.1[0m" 201 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:25:38] "OPTIONS /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:25:45] "[35m[1mPOST /api/patients HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:36:39] "OPTIONS /api/medical_records HTTP/1.1" 200 -
+ERROR:root:An error occurred during medical record management: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`patient`.`medical_records`, CONSTRAINT `fk_medical_records_patients` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`))
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:36:40] "[35m[1mPOST /api/medical_records HTTP/1.1[0m" 500 -
+INFO:werkzeug: * Detected change in '/home/x/dipar/back/api.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:47:47] "OPTIONS /api/medical_records HTTP/1.1" 200 -
+ERROR:root:An error occurred during medical record management: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`patient`.`medical_records`, CONSTRAINT `fk_medical_records_patients` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`))
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:47:47] "[35m[1mPOST /api/medical_records HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:48:37] "OPTIONS /api/medical_records HTTP/1.1" 200 -
+ERROR:root:An error occurred during medical record management: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`patient`.`medical_records`, CONSTRAINT `fk_medical_records_patients` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`))
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:48:38] "[35m[1mPOST /api/medical_records HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:49:05] "OPTIONS /api/medical_records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:49:06] "[35m[1mPOST /api/medical_records HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:50:22] "OPTIONS /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 19:50:22] "[35m[1mPOST /api/appointments HTTP/1.1[0m" 201 -
+INFO:werkzeug: * Detected change in '/home/x/dipar/back/api.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug: * Detected change in '/home/x/dipar/back/api.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug: * Detected change in '/home/x/dipar/back/api.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug: * Detected change in '/home/x/dipar/back/api.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 391-659-214
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:04:01] "OPTIONS /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:04:02] "[35m[1mPOST /api/patients HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:04:40] "OPTIONS /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:04:40] "[35m[1mPOST /api/appointments HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:05:10] "OPTIONS /api/medical_records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:05:10] "[35m[1mPOST /api/medical_records HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:18] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:18] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:23] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:23] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:27] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:25:27] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:30:13] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:30:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:33:14] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:49:59] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:49:59] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:50:54] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:50:54] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:52:06] "OPTIONS /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:52:07] "[35m[1mPOST /api/patients HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:52:16] "GET /api/patients HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [29/Aug/2024 20:52:17] "GET /api/patients HTTP/1.1" 200 -

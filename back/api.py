@@ -5,34 +5,42 @@ from dotenv import load_dotenv
 import os
 import logging
 import traceback
-
+import re
 
 app = Flask(__name__)
+
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
-#logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
 
-# Load environment variables
 load_dotenv()
 
+# Get environment variables securely
 MY_SECRET_KEY = os.environ.get('MY_SECRET_KEY')
 if not MY_SECRET_KEY:
-    raise ValueError("No MY_SECRET_KEY set for Flask application")
+    raise ValueError("No MY_SECRET_KEY set for Flask app")
 
 DATABASE_USER = os.environ.get('DATABASE_USER')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 DATABASE_HOST = os.environ.get('DATABASE_HOST')
 DATABASE_NAME = os.environ.get('DATABASE_NAME')
 
+if not all([DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME]):
+    raise ValueError("Database configuration is incomplete. Please set all required environment variables.")
+
 db_config = {
     'user': DATABASE_USER,
     'password': DATABASE_PASSWORD,
     'host': DATABASE_HOST,
-    'database': DATABASE_NAME
+    'database': DATABASE_NAME,
+    'connection_timeout': 10
 }
 
-# for registering new patient
+def is_valid_email(email):
+    """Validate email format using regex."""
+    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    return re.match(email_regex, email) is not None
+
 @app.route('/api/patients', methods=['POST'])
 def register_patient():
     cnx = None
@@ -50,6 +58,11 @@ def register_patient():
         if not all(key in data for key in required_keys):
             logging.error("Missing required patient information")
             return jsonify({'error': 'Missing required patient information'}), 400
+
+        # Validate email format
+        if not is_valid_email(data['email']):
+            logging.error(f"Invalid email format: {data['email']}")
+            return jsonify({'error': 'Invalid email format'}), 400
 
         # Check if email already exists
         check_email_sql = "SELECT COUNT(*) FROM patients WHERE email = %s"
@@ -80,7 +93,7 @@ def register_patient():
         else:
             logging.error(f"Database error: {err}")
             logging.error(traceback.format_exc())  # Log the stack trace
-            return jsonify({'error': 'Database error occurred'}), 500
+            return jsonify({'error': 'A database error occurred'}), 500
     except Exception as e:
         logging.error(f"An error occurred during patient registration: {str(e)}")
         logging.error(traceback.format_exc())  # Log the stack trace
@@ -95,30 +108,26 @@ def register_patient():
 def get_patients():
     try:
         cnx = mysql.connector.connect(**db_config)
-    except mysql.connector.Error as err:
-        logging.error(f"Database connection failed: {err}")
-        return jsonify({'error': 'Database connection failed'}), 500
-    try:
         cursor = cnx.cursor(dictionary=True)
         cursor.execute("SELECT * FROM patients")
         patients = cursor.fetchall()
         return jsonify(patients)
+    except mysql.connector.Error as err:
+        logging.error(f"Database connection failed: {err}")
+        return jsonify({'error': 'Database connection failed'}), 500
     except Exception as e:
         logging.error(f"An error occurred during patient retrieval: {str(e)}")
         return jsonify({'error': 'An error occurred during patient retrieval'}), 500
     finally:
-        cursor.close()
-        cnx.close()
+        if cursor is not None:
+            cursor.close()
+        if cnx is not None:
+            cnx.close()
 
 @app.route('/api/appointments', methods=['POST'])
 def create_appointment():
     try:
         cnx = mysql.connector.connect(**db_config)
-    except mysql.connector.Error as err:
-        logging.error(f"Database connection failed: {err}")
-        return jsonify({'error': 'Database connection failed'}), 500
-
-    try:
         cursor = cnx.cursor()
         data = request.json
         
@@ -145,40 +154,42 @@ def create_appointment():
         cnx.commit()
 
         return jsonify({'message': 'Appointment scheduled successfully'}), 201
+    except mysql.connector.Error as err:
+        logging.error(f"Database error: {err}")
+        return jsonify({'error': 'Database error occurred'}), 500
     except Exception as e:
         logging.error(f"An error occurred while scheduling the appointment: {str(e)}")
         return jsonify({'error': 'An error occurred while scheduling the appointment'}), 500
     finally:
-        cursor.close()
-        cnx.close()
+        if cursor is not None:
+            cursor.close()
+        if cnx is not None:
+            cnx.close()
 
 @app.route('/api/medical_records', methods=['GET', 'POST'])
 def manage_medical_records():
     try:
         cnx = mysql.connector.connect(**db_config)
-    except mysql.connector.Error as err:
-        logging.error(f"Database connection failed: {err}")
-        return jsonify({'error': 'Database connection failed'}), 500
-
-    try:
         cursor = cnx.cursor(dictionary=True)
         if request.method == 'POST':
             data = request.json
 
-            required_keys = ['patientName', 'patientId', 'dateOfVisit', 'symptoms', 'medicalHistory',"diagnosis","treatmentPlan"]
+            required_keys = ['patientName', 'patientId', 'dateOfVisit', 'symptoms', 'medicalHistory', "diagnosis", "treatmentPlan"]
             if not all(key in data for key in required_keys):
                 return jsonify({'error': 'Missing required medical record information'}), 400
-
-            sql = """INSERT INTO medical_records (patient_name, patient_id, date_of_visit, symptoms, medical_history, diagnosis, treatment_plan)
-                     VALUES (%s, %s, %s, %s, %s, %s,%s)"""
+            
+            sql = """
+            INSERT INTO medical_records (patient_name, patient_id, date_of_visit, symptoms, medical_history, diagnosis, treatment_plan)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
             values = (
                 data['patientName'], 
                 data['patientId'], 
                 data['dateOfVisit'], 
                 data['symptoms'],
                 data.get('medicalHistory'),
-                data['diagnosis'],
-                data['treatmentPlan']
+                data.get('diagnosis'),
+                data.get('treatmentPlan')
             )
             cursor.execute(sql, values)
             cnx.commit()
@@ -190,13 +201,17 @@ def manage_medical_records():
             medical_records = cursor.fetchall()
             return jsonify(medical_records)
         
+    except mysql.connector.Error as err:
+        logging.error(f"Database error: {err}")
+        return jsonify({'error': 'Database error occurred'}), 500
     except Exception as e:
         logging.error(f"An error occurred during medical record management: {str(e)}")
         return jsonify({'error': 'An error occurred during medical record management'}), 500
     finally:
-        cursor.close()
-        cnx.close()
-
+        if cursor is not None:
+            cursor.close()
+        if cnx is not None:
+            cnx.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
