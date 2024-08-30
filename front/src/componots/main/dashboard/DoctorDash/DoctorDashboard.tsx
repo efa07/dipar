@@ -1,23 +1,40 @@
 import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
-import Logo from "./user .png"; // Make sure the path is correct for your image
+import ScaleLoader from "react-spinners/ScaleLoader";
+import Logo from "./user .png"; 
 
-const DoctorDashboard = () => {
-  const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Define the Patient type
+interface Patient {
+  id: number;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  gender: string;
+  city: string;
+  state: string;
+  zip: string;
+  email: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  relationship: string;
+}
+
+const DoctorDashboard: React.FC = () => {
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/patients"); // Replace with your actual backend API URL
+        const response = await fetch("http://127.0.0.1:5000/api/patients");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
+        const data: Patient[] = await response.json();
         setPatients(data);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -28,18 +45,34 @@ const DoctorDashboard = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading patient data...</p>;
+    return  <div className="d-loader">Loading data...
+    <ScaleLoader
+        color="#22ffca"
+        height={100}
+        loading
+        radius={1}
+        width={9}
+      />
+    </div>;
   }
 
   if (error) {
-    return <p>Error loading data: {error}</p>;
+    return <div className="d-loader">Error loading data: {error}
+    <ScaleLoader
+        color="#22ffca"
+        height={100}
+        loading
+        radius={1}
+        width={9}
+      />
+    </div>;
   }
 
   return (
     <div className="doctor-dashboard">
       <h2>Patient Dashboard</h2>
       {patients.length > 0 ? (
-        patients.map(patient => (
+        patients.map((patient) => (
           <div key={patient.id} className="patient-info">
             <h3>Patient Information</h3>
             <div className="imgName">

@@ -4,6 +4,7 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 import logging
+import json
 import traceback
 import re
 
@@ -11,7 +12,7 @@ app = Flask(__name__)
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
-logging.basicConfig(filename='app.log', level=logging.ERROR)
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 load_dotenv()
 
@@ -212,6 +213,40 @@ def manage_medical_records():
             cursor.close()
         if cnx is not None:
             cnx.close()
+
+@app.route('/api/lab_test_requests', methods=['POST'])
+def create_lab_test_request():
+    try:
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor(dictionary=True)
+        data = request.json
+
+        # Extracting data from request
+        patient_id = int(data['patientId'])  # Ensure patient_id is an integer
+        selected_tests = json.dumps(data['labTests'])  # Convert list to JSON string
+        notes = data.get('notes', '')
+
+        # Log the received data for debugging
+        app.logger.debug(f"Received data: {data}")
+
+        # Insert into database (assuming a MySQL connection `conn` is set up)
+        cursor = cnx.cursor()
+        cursor.execute(
+            """
+            INSERT INTO LabTestRequests (patient_id, selected_tests, notes)
+            VALUES (%s, %s, %s)
+            """,
+            (patient_id, selected_tests, notes)
+        )
+        cnx.commit()
+
+        return jsonify({"message": "Lab test request created successfully."}), 201
+
+    except Exception as e:
+        app.logger.error(f"Error processing request: {str(e)}")
+        return jsonify({"error": str(e)}), 400
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

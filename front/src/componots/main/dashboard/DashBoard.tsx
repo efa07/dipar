@@ -26,7 +26,7 @@ import "./dashboard.css";
 const Dashboard = () => {
   return (
     <div className="dashboard-content">
-      /
+      
       <Routes>
         
         <Route path="dashboard" element={<DoctorDashboard />} /> 

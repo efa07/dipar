@@ -1,80 +1,147 @@
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./ptf.css";
 
-const PatientLabTestForm = () => {
+interface FormData {
+  patientName: string;
+  patientId: string;
+  labTests: string[];
+  notes: string;
+}
+
+const PatientLabTestForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
+    patientName: "",
+    patientId: "",
+    labTests: [],
+    notes: "",
+  });
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type, checked } = event.target;
+    
+    if (type === "checkbox") {
+      setFormData((prevData) => ({
+        ...prevData,
+        labTests: checked
+          ? [...prevData.labTests, value]
+          : prevData.labTests.filter((test) => test !== value),
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/lab_test_requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Lab test request submitted successfully.");
+        // Reset form data after successful submission
+        setFormData({
+          patientName: "",
+          patientId: "",
+          labTests: [],
+          notes: "",
+        });
+      } else {
+        alert("Failed to submit lab test request.");
+      }
+    } catch (error) {
+      console.error("Error submitting lab test request:", error);
+      alert("An error occurred while submitting the form.");
+    }
+  };
+
   return (
     <div className="pt">
-<div className="form-container">
-      <h2>Lab Test Request Form</h2>
-      <form action="/submit-lab-test" method="post">
-        <div className="form-group">
-          <label htmlFor="patientName">Patient Name:</label>
-          <input type="text" id="patientName" name="patientName" required />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="patientId">Patient ID:</label>
-          <input type="text" id="patientId" name="patientId" required />
-        </div>
-
-        <div className="form-group">
-          <label>Select Lab Test(s):</label>
-          <div className="checkbox-group">
-            <label>
-              <input type="checkbox" name="labTests" value="Complete Blood Count (CBC)" /> Complete Blood Count (CBC)
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Blood Glucose Test" /> Blood Glucose Test
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Liver Function Test (LFT)" /> Liver Function Test (LFT)
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Lipid Profile" /> Lipid Profile
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Thyroid Function Test" /> Thyroid Function Test
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Urine Analysis" /> Urine Analysis
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Electrolyte Panel" /> Electrolyte Panel
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Coagulation Tests" /> Coagulation Tests
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Vitamin D Test" /> Vitamin D Test
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Pregnancy Test" /> Pregnancy Test
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="COVID-19 Test" /> COVID-19 Test
-            </label>
-            <label>
-              <input type="checkbox" name="labTests" value="Cholesterol Test" /> Cholesterol Test
-            </label>
+      <div className="form-container">
+        <h2>Lab Test Request Form</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="patientName">Patient Name:</label>
+            <input
+              type="text"
+              id="patientName"
+              name="patientName"
+              value={formData.patientName}
+              onChange={handleInputChange}
+              required
+            />
           </div>
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="notes">Additional Notes:</label>
-          <textarea
-            id="notes"
-            name="notes"
-            rows="4"
-            placeholder="Enter any additional instructions or notes..."
-          ></textarea>
-        </div>
-        
-        <div className="form-group">
-          <button type="submit">Submit Request</button>
-        </div>
-      </form>
+          <div className="form-group">
+            <label htmlFor="patientId">Patient ID:</label>
+            <input
+              type="text"
+              id="patientId"
+              name="patientId"
+              value={formData.patientId}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Select Lab Test(s):</label>
+            <div className="checkbox-group">
+              {[
+                "Complete Blood Count (CBC)",
+                "Blood Glucose Test",
+                "Liver Function Test (LFT)",
+                "Lipid Profile",
+                "Thyroid Function Test",
+                "Urine Analysis",
+                "Electrolyte Panel",
+                "Coagulation Tests",
+                "Vitamin D Test",
+                "Pregnancy Test",
+                "COVID-19 Test",
+                "Cholesterol Test",
+              ].map((test) => (
+                <label key={test}>
+                  <input
+                    type="checkbox"
+                    name="labTests"
+                    value={test}
+                    checked={formData.labTests.includes(test)}
+                    onChange={handleInputChange}
+                  />{" "}
+                  {test}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="notes">Additional Notes:</label>
+            <textarea
+              id="notes"
+              name="notes"
+              rows={4}
+              placeholder="Enter any additional instructions or notes..."
+              value={formData.notes}
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
+
+          <div className="form-group">
+            <button type="submit">Submit Request</button>
+          </div>
+        </form>
+      </div>
     </div>
-    </div>
-    
   );
 };
 

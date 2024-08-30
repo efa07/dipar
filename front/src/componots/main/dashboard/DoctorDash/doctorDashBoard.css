@@ -109,6 +109,15 @@ strong {
   color: var(--red);
 }
 
+.d-loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  flex-direction: column;
+}
+
 @media (max-width: 600px) {
   .doctor-dashboard {
     padding: 10px;
