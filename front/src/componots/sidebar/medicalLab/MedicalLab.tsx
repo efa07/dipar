@@ -12,12 +12,7 @@ const medicalLabItems = [
     text: "Test Results",
     to: "lab-test-results",
   },
- 
-  {
-    icon: "bi bi-person-circle",
-    text: "Profile and Settings",
-    to: "profile-settings",
-  },
+
 ];
 
 const MedicalLab = () => {

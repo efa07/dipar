@@ -6,7 +6,7 @@
   --bg-light: #f8f9fa;
   --red:#F7493C;
   --bg-blue:#316F79;
-  
+  --search: #34d399;
 --SeafoamGreen: #B5E0B7;
 --Celadon-Green: #B2D8B7;
 --MossGreen: #98BF91;
@@ -39,4 +39,23 @@
   .main-content{
       padding: 20px;
   }
+}
+
+::-webkit-scrollbar {
+  width: 6px; 
+}
+
+::-webkit-scrollbar-track {
+  background: #fff; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--search);
+  border-radius: 10px; 
+}
+
+/* For Firefox */
+.scrollbar-container {
+  scrollbar-width: thin; 
+  scrollbar-color:var(--search) #f1f1f1; 
 }

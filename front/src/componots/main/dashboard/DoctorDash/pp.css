@@ -34,3 +34,74 @@
     color: var(--primary);
   }
   
+
+  /* General container styles */
+.pre {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* Styles for the prescriptions section */
+.prescriptions {
+  margin-bottom: 20px;
+}
+
+.prescription-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.prescription-item p {
+  margin: 5px 0;
+}
+
+.add-prescription {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.add-prescription h3 {
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.pre form {
+  display: flex;
+  flex-direction: column;
+}
+
+.pre label {
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #555;
+}
+
+.pre input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pre button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.pre button:hover {
+  background-color: #0056b3;
+}

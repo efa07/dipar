@@ -64,11 +64,6 @@ const sidebarItems: SidebarItem[] = [
     text: "Tasks",
     to: "/doctor/tasks",
   },
-  {
-    icon: "bi bi-person-circle",
-    text: "Profile and Settings",
-    to: "/doctor/profile-settings",
-  },
  
 ];
 

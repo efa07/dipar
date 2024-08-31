@@ -1,0 +1,16 @@
+1. Encryption for Data at Rest and in Transit
+AES (Advanced Encryption Standard): AES is widely regarded as the standard for encrypting data at rest due to its speed and security. Use AES-256 for the highest security level.
+TLS (Transport Layer Security): Use TLS 1.2 or higher to secure data in transit between your web app and the server. This ensures that all communications are encrypted and protected from eavesdropping.
+2. Hashing for Passwords and Data Integrity
+Argon2 or bcrypt: For storing passwords, use a slow hashing algorithm like Argon2 (recommended) or bcrypt. These algorithms are designed to be computationally expensive to crack.
+SHA-256 or SHA-3: For data integrity checks and ensuring that files or sensitive data have not been tampered with, you can use SHA-256 or SHA-3. These are cryptographic hash functions that provide a fixed-size hash value for data.
+3. Digital Signatures for Verification
+RSA or ECDSA (Elliptic Curve Digital Signature Algorithm): Use digital signatures to verify the authenticity and integrity of sensitive data, such as test results or medical records. ECDSA is recommended over RSA due to smaller key sizes and better performance while maintaining strong security.
+4. Key Management
+HSM (Hardware Security Modules) or AWS KMS (Key Management Service): For managing encryption keys securely, use an HSM if on-premises or a cloud-based solution like AWS KMS. Proper key management is crucial to prevent unauthorized access to encrypted data.
+5. Database Encryption
+Transparent Data Encryption (TDE): Many modern databases like MySQL, PostgreSQL, and SQL Server offer TDE, which encrypts the database files on the storage. This is particularly useful for protecting sensitive data like patient records.
+6. Tokenization for Sensitive Data
+Vault or AWS Secrets Manager: For managing and securely storing sensitive data, consider using tokenization services like HashiCorp Vault or AWS Secrets Manager. These tools can store secrets securely and provide access controls to manage who can see the data.
+7. End-to-End Encryption for Communication
+OpenPGP or S/MIME: For encrypting emails or communications between different parts of the system (like between a hospital and a doctor), use OpenPGP or S/MIME, which provide end-to-end encryption capabilities.

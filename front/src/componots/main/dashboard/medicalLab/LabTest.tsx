@@ -1,25 +1,51 @@
 import "./mlp.css";
+import { useState, useEffect } from "react";
 
-const MedicalLabPage = () => {
-  // Sample data to represent lab test requests. Replace this with data fetched from a backend API.
-  const labTestRequests = [
-    {
-      requestId: "REQ12345",
-      patientName: "John Doe",
-      patientId: "PAT001",
-      labTests: ["Complete Blood Count (CBC)", "Blood Glucose Test"],
-      notes: "Patient is fasting.",
-      requestDate: "2024-08-27",
-    },
-    {
-      requestId: "REQ12346",
-      patientName: "Jane Smith",
-      patientId: "PAT002",
-      labTests: ["Liver Function Test (LFT)", "Thyroid Function Test"],
-      notes: "Check for thyroid levels.",
-      requestDate: "2024-08-27",
-    },
-  ];
+interface LabTestRequest {
+  request_id: number;
+  patient_id: number;
+  selected_tests: string[];
+  notes: string;
+  request_date: string;
+  patient_name: string;
+}
+
+const MedicalLabPage: React.FC = () => {
+  const [labTestRequests, setLabTestRequests] = useState<LabTestRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLabTestRequests = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/lab_test_requests");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: LabTestRequest[] = await response.json();
+        setLabTestRequests(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLabTestRequests();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="mlp">
@@ -38,13 +64,17 @@ const MedicalLabPage = () => {
           </thead>
           <tbody>
             {labTestRequests.map((request) => (
-              <tr key={request.requestId}>
-                <td>{request.requestId}</td>
-                <td>{request.patientName}</td>
-                <td>{request.patientId}</td>
-                <td>{request.labTests.join(", ")}</td>
+              <tr key={request.request_id}>
+                <td>{request.request_id}</td>
+                <td>{request.patient_name}</td>
+                <td>{request.patient_id}</td>
+                <td>
+              {JSON.parse(request.selected_tests).map((test, index) => (
+                <div key={index}>{test}</div>
+              ))}
+            </td>
                 <td>{request.notes}</td>
-                <td>{request.requestDate}</td>
+                <td>{request.request_date}</td>
               </tr>
             ))}
           </tbody>

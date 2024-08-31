@@ -1,51 +1,90 @@
-.mst {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+/* General styling for the table container */
+.lab-test-results-table {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+/* Header styling */
+.lab-test-results-table h2 {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  color: #333;
+}
+
+/* Table styling */
+.lab-test-results-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.lab-test-results-table th,
+.lab-test-results-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.lab-test-results-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.lab-test-results-table td {
+  background-color: #fff;
+}
+
+/* Styling for input fields */
+.lab-test-results-table input[type="text"] {
+  width: calc(100% - 20px); /* Full width minus padding */
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Button styling */
+.lab-test-results-table button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.lab-test-results-table button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .lab-test-results-table {
+    padding: 15px;
   }
-  
-  .form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  .lab-test-results-table h2 {
+    font-size: 1.3em;
   }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
+
+  .lab-test-results-table th,
+  .lab-test-results-table td {
     padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 4px;
   }
-  
-  .form-group textarea {
-    resize: vertical;
+
+  .lab-test-results-table input[type="text"] {
+    font-size: 0.8em;
   }
-  
-  .form-group button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+  .lab-test-results-table button {
+    width: 100%;
+    font-size: 0.9em;
   }
-  
-  .form-group button:hover {
-    background-color: #0056b3;
-  }
-  
+}

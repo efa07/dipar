@@ -1,13 +1,101 @@
-.welcome{
-    width: 100%;
-    margin-top: 0;
-    height: 100vh;
+.welcome-page {
     display: flex;
-    border : 1px solid var(--second);
-}
-@media (max-width: 800px){
-    .welcome{
-        margin-top: 30px;
-        padding-top: 30px;
-    }
-}
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    border-radius: 50px;
+    scale: 0.9;
+    /* background-color: #083344; */
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; 
+  }
+  .welcome-content {
+    text-align: center;
+    max-width: 900px;
+    padding: 20px;
+ 
+  }
+  .logo-section {
+    margin-bottom: 20px;
+  }
+  .logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+  }
+  
+  .welcome-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: -webkit-linear-gradient(45deg, #00dbde, #fc00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .welcome-text {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+  
+  .get-started-button {
+    padding: 15px 30px;
+    font-size: 1.5em;
+    width: 50%;
+    align-self: center;
+    color: #ffffff;
+    background-color: #00dbde;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .get-started-button:hover {
+    background-color: #ff416c;
+  }
+  .card{
+    padding: 2em;
+    background: #083344;
+    border-radius: 10x;
+    position: relative;
+ }
+ .card p{
+    color: #00dbde;
+
+ }
+ @property --angle{
+     syntax: "<angle>";
+     initial-value: 0deg;
+     inherits: false;
+ }
+ .card::after, .card::before{
+    
+     content: "";
+     position: absolute;
+     height: 102%;
+     width: 101%;
+     background-image: conic-gradient(from var(--angle),red ,#00dbde,red);
+     top: 50%;
+     left: 50%;
+     translate:-50% -50%;
+     z-index: -1;
+     border-radius: 9px;
+     animation: 3s spin linear infinite;
+ }
+ .card::before{
+     filter: blur(0rem);
+ }
+
+ @keyframes spin {
+     from{
+         --angle: 0deg;
+     }
+     to{
+         --angle: 360deg;
+     }
+ }
