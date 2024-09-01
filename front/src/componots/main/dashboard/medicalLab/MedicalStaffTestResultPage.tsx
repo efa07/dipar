@@ -1,58 +1,73 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./mst.css"
-interface LabTestRequest {
-  patient_id: number;
-  patient_name: string;
-  request_date: string;
-  request_id: number;
-  selected_tests: string;
-}
 
 interface TestResult {
-  [key: string]: string; // Dynamic key for test name, value is the result
+  test_name: string;
+  result: string;
+  comments: string;
 }
 
-const LabTestResultsTable: React.FC = () => {
-  const [labTestRequests, setLabTestRequests] = useState<LabTestRequest[]>([]);
-  const [testResults, setTestResults] = useState<{ [key: number]: TestResult }>({});
+interface FormData {
+  request_id: string;
+  test_results: TestResult[];
+}
 
-  useEffect(() => {
-    // Fetch lab test requests from the API endpoint
-    const fetchLabTestRequests = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/api/lab_test_requests");
-        const data = await response.json();
-        setLabTestRequests(data);
-      } catch (error) {
-        console.error("Error fetching lab test requests:", error);
-      }
-    };
+const MedicalStaffTestResultPage: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
+    request_id: "",
+    test_results: [{ test_name: "", result: "", comments: "" }],
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    fetchLabTestRequests();
-  }, []);
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, index: number) => {
+    const { name, value } = event.target;
+    if (name === "request_id") {
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value,
+      }));
+    } else {
+      const updatedTestResults = [...formData.test_results];
+      updatedTestResults[index] = {
+        ...updatedTestResults[index],
+        [name]: value,
+      };
+      setFormData(prevData => ({
+        ...prevData,
+        test_results: updatedTestResults,
+      }));
+    }
+  };
 
-  const handleInputChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    requestId: number,
-    testName: string
-  ) => {
-    const { value } = event.target;
-
-    setTestResults((prevResults) => ({
-      ...prevResults,
-      [requestId]: {
-        ...prevResults[requestId],
-        [testName]: value,
-      },
+  const addTestResult = () => {
+    setFormData(prevData => ({
+      ...prevData,
+      test_results: [...prevData.test_results, { test_name: "", result: "", comments: "" }],
     }));
   };
 
-  const handleSubmit = async (event: FormEvent, requestId: number) => {
-    event.preventDefault();
+  const removeTestResult = (index: number) => {
+    setFormData(prevData => ({
+      ...prevData,
+      test_results: prevData.test_results.filter((_, i) => i !== index),
+    }));
+  };
 
-    const resultData = {
-      request_id: requestId,
-      results: testResults[requestId] || {},
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    if (isNaN(parseInt(formData.request_id, 10))) {
+      setError("Request ID must be a valid number");
+      setIsLoading(false);
+      return;
+    }
+
+    const formattedData = {
+      request_id: parseInt(formData.request_id, 10),
+      test_results: formData.test_results,
     };
 
     try {
@@ -61,77 +76,138 @@ const LabTestResultsTable: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(resultData),
+        body: JSON.stringify(formattedData),
       });
 
       if (response.ok) {
-        alert(`Lab test results for Request ID ${requestId} submitted successfully.`);
-        setTestResults((prevResults) => {
-          const newResults = { ...prevResults };
-          delete newResults[requestId]; // Clear the form for this request after submission
-          return newResults;
+        alert("Lab test results submitted successfully.");
+        setFormData({
+          request_id: "",
+          test_results: [{ test_name: "", result: "", comments: "" }],
         });
       } else {
-        alert(`Failed to submit lab test results for Request ID ${requestId}.`);
+        const errorData = await response.json();
+        setError(`Failed to submit lab test results: ${errorData.error}`);
       }
     } catch (error) {
-      console.error(`Error submitting lab test results for Request ID ${requestId}:`, error);
-      alert("An error occurred while submitting the test results.");
+      console.error("Error submitting lab test results:", error);
+      setError("An error occurred while submitting the form.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const testNameOptions = [
+    "Complete Blood Count (CBC)",
+    "Blood Glucose Test",
+    "Liver Function Test (LFT)",
+    "Lipid Profile",
+    "Thyroid Function Test",
+    "Urine Analysis",
+    "Electrolyte Panel",
+    "Coagulation Tests",
+    "Vitamin D Test",
+    "Pregnancy Test",
+    "COVID-19 Test",
+    "Cholesterol Test",
+  ];
+
   return (
-    <div className="lab-test-results-table">
-      <h2>Lab Test Results</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Request ID</th>
-            <th>Patient Name</th>
-            <th>Patient ID</th>
-            <th>Request Date</th>
-            <th>Selected Tests</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {labTestRequests.map((request) => (
-            <tr key={request.request_id}>
-              <td>{request.request_id}</td>
-              <td>{request.patient_name}</td>
-              <td>{request.patient_id}</td>
-              <td>{new Date(request.request_date).toLocaleString()}</td>
-              <td>
-                {JSON.parse(request.selected_tests).map((test: string, index: number) => (
-                  <div key={index}>
-                    {test}
-                    <input
-                      type="text"
-                      placeholder={`Enter result for ${test}`}
-                      value={
-                        testResults[request.request_id]?.[test] || ""
-                      }
-                      onChange={(e) =>
-                        handleInputChange(e, request.request_id, test)
-                      }
-                    />
-                  </div>
-                ))}
-              </td>
-              <td>
-                <button
-                  type="button"
-                  onClick={(e) => handleSubmit(e, request.request_id)}
+    <div className="pt">
+      <div className="form-container">
+        <h2>Lab Test Results Form</h2>
+        {error && <div className="error-message" role="alert">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="request_id">Request ID:</label>
+            <input
+              type="text"
+              id="request_id"
+              name="request_id"
+              value={formData.request_id}
+              onChange={(e) => handleInputChange(e, 0)}
+              required
+              aria-required="true"
+              pattern="\d+"
+              title="Please enter a valid number"
+            />
+          </div>
+
+          {formData.test_results.map((testResult, index) => (
+            <div key={index} className="test-result-container">
+              <h3>Test Result {index + 1}</h3>
+              <div className="form-group">
+                <label htmlFor={`test_name_${index}`}>Test Name:</label>
+                <select
+                  id={`test_name_${index}`}
+                  name="test_name"
+                  value={testResult.test_name}
+                  onChange={(e) => handleInputChange(e, index)}
+                  required
+                  aria-required="true"
                 >
-                  Send Results
+                  <option value="">Select a test</option>
+                  {testNameOptions.map((test) => (
+                    <option key={test} value={test}>
+                      {test}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor={`result_${index}`}>Result:</label>
+                <input
+                  type="text"
+                  id={`result_${index}`}
+                  name="result"
+                  value={testResult.result}
+                  onChange={(e) => handleInputChange(e, index)}
+                  required
+                  aria-required="true"
+                  maxLength={255}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor={`comments_${index}`}>Comments:</label>
+                <textarea
+                  id={`comments_${index}`}
+                  name="comments"
+                  rows={4}
+                  placeholder="Enter any additional comments..."
+                  value={testResult.comments}
+                  onChange={(e) => handleInputChange(e, index)}
+                ></textarea>
+              </div>
+
+              {index > 0 && (
+                <button type="button" onClick={() => removeTestResult(index)} className="remove-btn btn btn-danger text-white m-1">
+                  Remove Test Result
                 </button>
-              </td>
-            </tr>
+              )}
+            </div>
           ))}
-        </tbody>
-      </table>
+
+          <button type="button" onClick={addTestResult} className="add-btn btn btn-primary m-1">
+            Add Another Test Result
+          </button>
+
+          <div className="form-group">
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Submitting..." : "Submit Results"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default LabTestResultsTable;
+export default MedicalStaffTestResultPage;
+
+
+
+
+
+

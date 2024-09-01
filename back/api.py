@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
+from datetime import datetime
 import os
 import logging
 import json
@@ -183,6 +184,34 @@ def get_apppointments():
         if cnx is not None:
             cnx.close()
 
+@app.route('/api/appointments/<int:id>', methods=['DELETE'])
+def delete_appointment(id):
+    try:
+        # Establish the connection
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+
+        # Execute the delete statement
+        cursor.execute("DELETE FROM appointments WHERE id = %s", (id,))
+        cnx.commit()
+
+        # Check if any row was deleted
+        if cursor.rowcount == 0:
+            return jsonify({'message': 'Appointment not found'}), 404
+
+        return jsonify({'message': 'Appointment deleted successfully'}), 200
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return jsonify({'error': 'An error occurred while deleting the appointment'}), 500
+
+    finally:
+        # Close the cursor and connection
+        if 'cursor' in locals() and cursor is not None:
+            cursor.close()
+        if 'cnx' in locals() and cnx is not None:
+            cnx.close()
+
 @app.route('/api/medical_records', methods=['GET', 'POST'])
 def manage_medical_records():
     try:
@@ -237,18 +266,20 @@ def create_lab_test_request():
         cursor = cnx.cursor(dictionary=True)
         data = request.json
 
-        patient_name = data.get('patientName')
-        patient_id = int(data['patientId'])
-        selected_tests = json.dumps(data['labTests'])
+        patient_name = data.get('patient_name')
+        patient_id = data.get('patient_id')
+        selected_tests = json.dumps(data.get('selected_tests', []))
         notes = data.get('notes', '')
 
         app.logger.debug(f"Received data: {data}")
 
-        cursor = cnx.cursor()
+        if not patient_name or not patient_id:
+            return jsonify({"error": "Patient name and ID are required."}), 400
+
         cursor.execute(
             """
-            INSERT INTO LabTestRequests (patient_id, patient_name, selected_tests, notes)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO Lab_Test_Requests (patient_id, patient_name, request_date, selected_tests, notes)
+            VALUES (%s, %s, NOW(), %s, %s)
             """,
             (patient_id, patient_name, selected_tests, notes)
         )
@@ -259,69 +290,89 @@ def create_lab_test_request():
     except Exception as e:
         app.logger.error(f"Error processing request: {str(e)}")
         return jsonify({"error": str(e)}), 400
+    finally:
+        if cnx.is_connected():
+            cursor.close()
+            cnx.close()
+
 
 @app.route('/api/lab_test_requests', methods=['GET'])
 def get_lab_test_requests():
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM LabTestRequests")
-        lab_test_requests = cursor.fetchall()
-        return jsonify(lab_test_requests)
-    except mysql.connector.Error as err:
-        logging.error(f"Database connection failed: {err}")
-        return jsonify({'error': 'Database connection failed'}), 500
+
+        query = """
+        SELECT request_id, patient_id, patient_name, selected_tests, notes, request_date
+        FROM Lab_Test_Requests
+        ORDER BY request_date DESC
+        """
+        cursor.execute(query)
+
+        results = cursor.fetchall()
+
+        # Format the data to match the frontend expectations
+        formatted_results = []
+        for row in results:
+            formatted_row = {
+                "request_id": row['request_id'],
+                "patient_id": row['patient_id'],
+                "patient_name": row['patient_name'],
+                "selected_tests": row['selected_tests'],  # Keep as JSON string
+                "notes": row['notes'],
+                "request_date": row['request_date'].isoformat() if isinstance(row['request_date'], datetime) else row['request_date']
+            }
+            formatted_results.append(formatted_row)
+
+        return jsonify(formatted_results), 200
+
     except Exception as e:
-        logging.error(f"An error occurred during patient retrieval: {str(e)}")
-        return jsonify({'error': 'An error occurred during patient retrieval'}), 500
+        app.logger.error(f"Error processing request: {str(e)}")
+        return jsonify({"error": str(e)}), 400
     finally:
-        if cursor is not None:
+        if cnx.is_connected():
             cursor.close()
-        if cnx is not None:
             cnx.close()
 
 @app.route('/api/lab_test_results', methods=['POST'])
 def submit_lab_test_results():
-    data = request.json
+    data = request.json  # Get the JSON data sent from the frontend
     request_id = data.get('request_id')
-    results = data.get('results')
+    test_results = data.get('test_results', [])
 
-    if not request_id or not results:
-        return jsonify({"error": "Invalid input"}), 400
-
-    cnx = None
-    cursor = None
+    if not isinstance(request_id, int):
+        return jsonify({"error": "Invalid request ID"}), 400
 
     try:
+        # Connect to the MySQL database
         cnx = mysql.connector.connect(**db_config)
-        cursor = cnx.cursor(dictionary=True)
+        cursor = cnx.cursor()
 
-        # Iterate over the test results and insert each result into the database
-        for test_name, test_result in results.items():
-            cursor.execute("""
-                INSERT INTO lab_test_results (request_id, patient_id, patient_name, test_name, test_result)
-                SELECT %s, patient_id, patient_name, %s, %s 
-                FROM lab_test_requests 
-                WHERE request_id = %s
-            """, (request_id, test_name, test_result, request_id))
-        
+        # Insert each test result into the database
+        for result in test_results:
+            test_name = result.get('test_name')
+            test_result = result.get('result')
+            comments = result.get('comments', '')
+
+            # Insert statement for the test result
+            insert_query = """
+                INSERT INTO lab_test_results (request_id, test_name, result, comments)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (request_id, test_name, test_result, comments))
+
         cnx.commit()
 
-        return jsonify({"message": "Test results submitted successfully"}), 201
+        return jsonify({"message": "Lab test results submitted successfully"}), 200
 
     except mysql.connector.Error as err:
-        logging.error(f"Database error during test result submission: {err}")
-        return jsonify({"error": "Failed to submit test results"}), 500
-
-    except Exception as e:
-        logging.error(f"Error submitting test results: {str(e)}")
-        return jsonify({"error": "Failed to submit test results"}), 500
+        print(f"Error: {err}")
+        return jsonify({"error": "Database error occurred"}), 500
 
     finally:
-        if cursor:
-            cursor.close()
-        if cnx:
-            cnx.close()
+        cursor.close()
+        cnx.close()
+
 
 @app.route('/api/prescriptions', methods=['POST'])
 def add_prescription():

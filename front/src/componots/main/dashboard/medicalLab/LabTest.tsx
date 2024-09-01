@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 interface LabTestRequest {
   request_id: number;
   patient_id: number;
-  selected_tests: string[];
+  selected_tests: string;
   notes: string;
   request_date: string;
   patient_name: string;
@@ -39,6 +39,29 @@ const MedicalLabPage: React.FC = () => {
     fetchLabTestRequests();
   }, []);
 
+  const handleDelete = async (request_id: number) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/lab_test_requests/${request_id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Remove the deleted item from the state
+      setLabTestRequests(prevRequests =>
+        prevRequests.filter(request => request.request_id !== request_id)
+      );
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -60,6 +83,7 @@ const MedicalLabPage: React.FC = () => {
               <th>Requested Tests</th>
               <th>Additional Notes</th>
               <th>Request Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,12 +93,20 @@ const MedicalLabPage: React.FC = () => {
                 <td>{request.patient_name}</td>
                 <td>{request.patient_id}</td>
                 <td>
-              {JSON.parse(request.selected_tests).map((test, index) => (
-                <div key={index}>{test}</div>
-              ))}
-            </td>
+                  {JSON.parse(request.selected_tests).map((test: string, index: number) => (
+                    <div key={index}>{test}</div>
+                  ))}
+                </td>
                 <td>{request.notes}</td>
-                <td>{request.request_date}</td>
+                <td>{new Date(request.request_date).toLocaleDateString()}</td>
+                <td>
+                  <button 
+                    onClick={() => handleDelete(request.request_id)} 
+                    className="btn btn-danger"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

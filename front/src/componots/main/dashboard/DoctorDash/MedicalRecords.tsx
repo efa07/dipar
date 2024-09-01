@@ -1,5 +1,7 @@
 import "./mr.css";
 import { useState, useEffect } from "react";
+import ScaleLoader from "react-spinners/ScaleLoader";
+
 
 interface MedicalRecord {
   id: number;
@@ -44,7 +46,15 @@ const MedicalRecords: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="d-loader">Loading data...
+    <ScaleLoader
+        color="#22ffca"
+        height={100}
+        loading
+        radius={1}
+        width={9}
+      />
+    </div>;
   }
 
   if (error) {

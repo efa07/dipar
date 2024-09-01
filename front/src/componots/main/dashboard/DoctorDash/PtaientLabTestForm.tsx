@@ -3,7 +3,7 @@ import "./ptf.css";
 
 interface FormData {
   patientName: string;
-  patientId: string;
+  patientId: string;  // Change to string
   labTests: string[];
   notes: string;
 }
@@ -11,14 +11,14 @@ interface FormData {
 const PatientLabTestForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     patientName: "",
-    patientId: "",
+    patientId: "",  // Initialize as empty string
     labTests: [],
     notes: "",
   });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked } = event.target;
-    
+  
     if (type === "checkbox") {
       setFormData((prevData) => ({
         ...prevData,
@@ -37,13 +37,21 @@ const PatientLabTestForm: React.FC = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // Format data to match the backend's expected input
+    const formattedData = {
+      patient_name: formData.patientName,
+      patient_id: parseInt(formData.patientId, 10),  // Convert to integer
+      selected_tests: formData.labTests,  // Send as array, not JSON string
+      notes: formData.notes,
+    };
+
     try {
       const response = await fetch("http://127.0.0.1:5000/api/lab_test_requests", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
 
       if (response.ok) {
@@ -56,7 +64,8 @@ const PatientLabTestForm: React.FC = () => {
           notes: "",
         });
       } else {
-        alert("Failed to submit lab test request.");
+        const errorData = await response.json();
+        alert(`Failed to submit lab test request: ${errorData.error}`);
       }
     } catch (error) {
       console.error("Error submitting lab test request:", error);

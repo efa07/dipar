@@ -40,11 +40,6 @@ const nurseSidebarItems = [
     text: "Tasks",
     to: "/nurse/tasks",
   },
-  {
-    icon: "bi bi-person-circle",
-    text: "Profile and Settings",
-    to: "/nurse/profile-settings",
-  },
 ];
 
 const NurseSidebar = () => {
