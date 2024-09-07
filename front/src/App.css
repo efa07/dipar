@@ -18,8 +18,6 @@
 *{
   font-family: 'Roboto', sans-serif;
 }
-
-
 .sidebarapp {
   position: fixed;
   top: 0;
@@ -27,7 +25,8 @@
   height: 100%;
 }
 .main-content{
-  scale: 0.95;
+  scale: 0.9;
+  height: 100vh;
   width: calc(100vw - 251px);
   float: right;
   font-family:'Times New Roman', Times, serif;

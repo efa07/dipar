@@ -6,8 +6,14 @@ from datetime import datetime
 import os
 import logging
 import json
+from cryptography.fernet import Fernet
 import traceback
 import re
+from flask import Flask, request, jsonify
+from werkzeug.security import generate_password_hash,check_password_hash
+from argon2 import PasswordHasher
+import argon2
+
 
 app = Flask(__name__)
 
@@ -16,6 +22,15 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 load_dotenv()
+
+#argon2 setup
+ph = PasswordHasher()
+
+# Use a fixed encryption key for encryption and decryption
+encryption_key = os.environ.get('ENCRYPTION_KEY') 
+if encryption_key is None:
+    encryption_key = Fernet.generate_key() 
+cipher_suite = Fernet(encryption_key)
 
 # Get environment variables
 MY_SECRET_KEY = os.environ.get('MY_SECRET_KEY')
@@ -43,6 +58,109 @@ def is_valid_email(email):
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, email) is not None
 
+
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+
+    user_id = data['user_id']
+    first_name = data['first_name']
+    last_name = data['last_name']
+    age = data.get('age')
+    email = data['email']
+    password = data['password']
+    role = data['role']
+
+    # Perform validation
+    if not is_valid_email(email):
+        logging.error("Invalid email format.")
+        return jsonify({'error': 'Invalid email format'}), 400
+
+    # Hash the password using Argon2
+    password_hash = ph.hash(password)
+
+    # Encrypt the email
+    encrypted_email = cipher_suite.encrypt(email.encode('utf-8'))
+
+    cnx = None
+    cursor = None
+    try:
+        # Connect to the MySQL database
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+
+        # Insert user data into the users table(injection endateresa)
+        insert_query = """
+        INSERT INTO users (user_id, first_name, last_name, age, email, password_hash, role)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (user_id, first_name, last_name, age, encrypted_email, password_hash, role))
+
+        # Commit the transaction
+        cnx.commit()
+
+        # Return a successful response
+        return jsonify({'message': 'User registered successfully'}), 201
+
+    except mysql.connector.Error as err:
+        logging.error(f"MySQL Error: {err}")
+        return jsonify({'error': 'An error occurred while registering the user'}), 500
+
+    finally:
+        # Close the cursor and cnx
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.close()
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    # Encrypt the email to match the stored value in the database
+    encrypted_email = cipher_suite.encrypt(email.encode('utf-8'))
+
+    cnx = None
+    cursor = None
+    try:
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+
+        query = "SELECT email, password_hash FROM users"
+        cursor.execute(query)
+        users = cursor.fetchall()
+
+        # Decrypt and find a match for the provided email
+        user = None
+        for db_email, password_hash in users:
+            decrypted_email = cipher_suite.decrypt(db_email).decode('utf-8')
+            if decrypted_email == email:
+                user = (decrypted_email, password_hash)
+                break
+
+        if user:
+            try:
+                if ph.verify(user[1], password):
+                    return jsonify({'message': 'Login successful'}), 200
+            except argon2.exceptions.VerifyMismatchError:
+                logging.error("Password mismatch for email: {}".format(email))
+                return jsonify({'error': 'Invalid email or password'}), 401
+        else:
+            logging.error("Email not found or does not match: {}".format(email))
+            return jsonify({'error': 'Invalid email or password'}), 401
+
+    except mysql.connector.Error as err:
+        logging.error(f"MySQL Error: {err}")
+        return jsonify({'error': 'An error occurred'}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.close()
+
 @app.route('/api/patients', methods=['POST'])
 def register_patient():
     cnx = None
@@ -54,7 +172,6 @@ def register_patient():
 
         logging.info(f"Received data: {data}")
 
-        # Ensure all expected keys are in the data
         required_keys = ['firstName', 'lastName', 'dob', 'gender', 'email', 'city', 'state', 'zip', 'emergencyContactName', 'emergencyContactPhone', 'relationship']
         if not all(key in data for key in required_keys):
             logging.error("Missing required patient information")
@@ -72,13 +189,11 @@ def register_patient():
             logging.error(f"Email {data['email']} already exists")
             return jsonify({'error': 'Email already exists'}), 409
 
-        # Extract values from the dictionary and create a list for parameters
         values = [data[key] for key in required_keys]
 
         sql = """INSERT INTO patients (firstName, lastName, dob, gender, email, city, state, zip, emergencyContactName, emergencyContactPhone, relationship)
                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-        # Use parameterized queries with cursor.execute() to prevent SQL injection
         cursor.execute(sql, values)
         cnx.commit()
         
@@ -187,15 +302,12 @@ def get_apppointments():
 @app.route('/api/appointments/<int:id>', methods=['DELETE'])
 def delete_appointment(id):
     try:
-        # Establish the connection
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Execute the delete statement
         cursor.execute("DELETE FROM appointments WHERE id = %s", (id,))
         cnx.commit()
 
-        # Check if any row was deleted
         if cursor.rowcount == 0:
             return jsonify({'message': 'Appointment not found'}), 404
 
@@ -206,7 +318,6 @@ def delete_appointment(id):
         return jsonify({'error': 'An error occurred while deleting the appointment'}), 500
 
     finally:
-        # Close the cursor and connection
         if 'cursor' in locals() and cursor is not None:
             cursor.close()
         if 'cnx' in locals() and cnx is not None:
@@ -311,7 +422,6 @@ def get_lab_test_requests():
 
         results = cursor.fetchall()
 
-        # Format the data to match the frontend expectations
         formatted_results = []
         for row in results:
             formatted_row = {
@@ -336,7 +446,7 @@ def get_lab_test_requests():
 
 @app.route('/api/lab_test_results', methods=['POST'])
 def submit_lab_test_results():
-    data = request.json  # Get the JSON data sent from the frontend
+    data = request.json  
     request_id = data.get('request_id')
     test_results = data.get('test_results', [])
 
@@ -344,17 +454,14 @@ def submit_lab_test_results():
         return jsonify({"error": "Invalid request ID"}), 400
 
     try:
-        # Connect to the MySQL database
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Insert each test result into the database
         for result in test_results:
             test_name = result.get('test_name')
             test_result = result.get('result')
             comments = result.get('comments', '')
 
-            # Insert statement for the test result
             insert_query = """
                 INSERT INTO lab_test_results (request_id, test_name, result, comments)
                 VALUES (%s, %s, %s, %s)
@@ -373,12 +480,31 @@ def submit_lab_test_results():
         cursor.close()
         cnx.close()
 
+@app.route('/api/lab_test_results', methods=['GET'])
+def get_lab_test_results():
+    try:
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM lab_test_results")
+        lab_result = cursor.fetchall()
+        return jsonify(lab_result)
+    except mysql.connector.Error as err:
+        logging.error(f"Database connection failed: {err}")
+        return jsonify({'error': 'Database connection failed'}), 500
+    except Exception as e:
+        logging.error(f"An error occurred during patient retrieval: {str(e)}")
+        return jsonify({'error': 'An error occurred during patient retrieval'}), 500
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if cnx is not None:
+            cnx.close()
+
 
 @app.route('/api/prescriptions', methods=['POST'])
 def add_prescription():
     data = request.get_json()
 
-    # Validate the data
     required_fields = ['date', 'medication', 'dosage', 'frequency', 'doctor_id', 'patient_id']
     if not all(field in data for field in required_fields):
         return jsonify({'error': 'Missing required fields'}), 400
@@ -390,7 +516,6 @@ def add_prescription():
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # SQL query to insert a new prescription
         add_prescription_query = """
             INSERT INTO prescriptions (prescription_date, medication, dosage, frequency, prescribing_doctor, patient_id)
             VALUES (%s, %s, %s, %s, %s, %s)
@@ -400,7 +525,7 @@ def add_prescription():
             data['medication'],
             data['dosage'],
             data['frequency'],
-            data['doctor_id'],  # This will be the doctor's name from the frontend
+            data['doctor_id'],  
             data['patient_id']
         ))
         cnx.commit()

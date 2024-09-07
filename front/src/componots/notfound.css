@@ -1,10 +1,14 @@
+
 .notfound{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 160px);
-    border: 1px solid red;
+    border: 1px solid black;
     background:transparent;
+    height: 65vh;
+    box-shadow: -15px 25px 1px black;
     overflow: hidden;
+    margin-top: 50px;
     flex-direction: column;
 }
+

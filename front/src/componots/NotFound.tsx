@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import "./notfound.css"
 const NotFound = () => {
   return (
-    <div>
+    <div className="not-con">
         <div className="notfound">
             <div className="notfound-404">
             <h1>404</h1>
