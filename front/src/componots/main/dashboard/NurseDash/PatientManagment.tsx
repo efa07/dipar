@@ -1,5 +1,6 @@
 import "./PatientManagment.css"
 import { useState } from "react";
+import {Link} from "react-router-dom"
 
 const PatientManagment = () => {
   const [selectedPatient, setSelectedPatient] = useState('');
@@ -38,7 +39,9 @@ const PatientManagment = () => {
     <div className="medication-administration-container">
       <header className="medication-administration-header">
         <h1>Medication Administration</h1>
-        <button className="back-button">← Back to Dashboard</button>
+        <button className="back-button">
+          <Link to="/nurse/nurseDash">← Back to Dashboard</Link>
+          </button>
       </header>
 
       <div className="patient-selector">
@@ -48,9 +51,8 @@ const PatientManagment = () => {
           onChange={(e) => setSelectedPatient(e.target.value)}
         >
           <option value="">-- Select Patient --</option>
-          {/* Add options dynamically based on available patients */}
-          <option value="patient1">John Doe</option>
-          <option value="patient2">Jane Smith</option>
+          <option value="patient1">patient one</option>
+          <option value="patient2">patient two</option>
         </select>
       </div>
 
@@ -61,7 +63,6 @@ const PatientManagment = () => {
           onChange={(e) => setSelectedMedication(e.target.value)}
         >
           <option value="">-- Select Medication --</option>
-          {/* Add options dynamically based on available medications */}
           <option value="med1">Aspirin</option>
           <option value="med2">Ibuprofen</option>
         </select>

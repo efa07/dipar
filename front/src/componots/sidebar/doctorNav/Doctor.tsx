@@ -33,7 +33,7 @@ const sidebarItems: SidebarItem[] = [
     collapseId: "patient-management-nav",
     subItems: [
       {
-        icon: <i className="fi fi-tr-microscope"></i>,
+        icon: <i className="bi bi-tr-microscope"></i>,
         text: "Add Lab Test",
         to: "/doctor/lab-test/add", 
       },

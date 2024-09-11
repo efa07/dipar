@@ -12,7 +12,7 @@ const PatientManagmentNote = () => {
         ...notesHistory,
         { note, date: new Date().toISOString().split('T')[0] },
       ]);
-      setNote('');  // Reset the note input field
+      setNote('');  
     }
   };
 
@@ -30,9 +30,8 @@ const PatientManagmentNote = () => {
           onChange={(e) => setSelectedPatient(e.target.value)}
         >
           <option value="">-- Select Patient --</option>
-          {/* Add options dynamically based on available patients */}
-          <option value="patient1">John Doe</option>
-          <option value="patient2">Jane Smith</option>
+          <option value="patient1">patient one</option>
+          <option value="patient2">patient two</option>
         </select>
       </div>
 

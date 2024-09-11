@@ -7,6 +7,28 @@
   font-family: 'Roboto', sans-serif;  
   
 }
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 30px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  align-items: center;
+}
+
+.search-input:focus {
+  border-color: #22ffca;
+  box-shadow: 0 0 10px rgba(34, 255, 202, 0.3);
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
 .doctor-dashboard h2 {
   text-align: center;
   color: #333;

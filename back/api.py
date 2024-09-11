@@ -17,7 +17,7 @@ import argon2
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}} )
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
@@ -44,7 +44,7 @@ DATABASE_NAME = os.environ.get('DATABASE_NAME')
 
 if not all([DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME]):
     raise ValueError("Database configuration is incomplete. Please set all required environment variables.")
-
+# from .env
 db_config = {
     'user': DATABASE_USER,
     'password': DATABASE_PASSWORD,
@@ -57,7 +57,6 @@ def is_valid_email(email):
     """Validate email format using regex."""
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, email) is not None
-
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -128,27 +127,27 @@ def login():
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        query = "SELECT email, password_hash FROM users"
+        query = "SELECT email, password_hash, role FROM users"
         cursor.execute(query)
         users = cursor.fetchall()
 
         # Decrypt and find a match for the provided email
         user = None
-        for db_email, password_hash in users:
+        for db_email, password_hash, role in users:
             decrypted_email = cipher_suite.decrypt(db_email).decode('utf-8')
             if decrypted_email == email:
-                user = (decrypted_email, password_hash)
+                user = (password_hash, role)
                 break
 
         if user:
             try:
-                if ph.verify(user[1], password):
-                    return jsonify({'message': 'Login successful'}), 200
+                if ph.verify(user[0], password):
+                    return jsonify({'message': 'Login successful', 'role': user[1]}), 200
             except argon2.exceptions.VerifyMismatchError:
-                logging.error("Password mismatch for email: {}".format(email))
+                logging.error(f"Password mismatch for email: {email}")
                 return jsonify({'error': 'Invalid email or password'}), 401
         else:
-            logging.error("Email not found or does not match: {}".format(email))
+            logging.error(f"Email not found or does not match: {email}")
             return jsonify({'error': 'Invalid email or password'}), 401
 
     except mysql.connector.Error as err:

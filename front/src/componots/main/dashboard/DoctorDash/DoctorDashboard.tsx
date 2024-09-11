@@ -1,7 +1,7 @@
 import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import Logo from "./user .png"; 
+import Logo from "./user .png";
 
 // Define the Patient type
 interface Patient {
@@ -23,6 +23,7 @@ const DoctorDashboard: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -44,56 +45,68 @@ const DoctorDashboard: React.FC = () => {
     fetchPatientData();
   }, []);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  //find the patient whose full name matches the search term
+  const searchedPatient = patients.find(
+    (patient) =>
+      `${patient.firstName.toLowerCase()} ${patient.lastName.toLowerCase()}` ===
+      searchTerm.toLowerCase()
+  );
+
   if (loading) {
-    return  <div className="d-loader">Loading data...
-    <ScaleLoader
-        color="#22ffca"
-        height={100}
-        loading
-        radius={1}
-        width={9}
-      />
-    </div>;
+    return (
+      <div className="d-loader">
+        <ScaleLoader color="#22ffca" height={100} loading radius={1} width={9} />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="d-loader">Error loading data: {error}
-    <ScaleLoader
-        color="#22ffca"
-        height={100}
-        loading
-        radius={1}
-        width={9}
-      />
-    </div>;
+    return (
+      <div className="d-loader">
+        Error loading data: {error}
+        <ScaleLoader color="red" height={100} loading radius={1} width={9} />
+      </div>
+    );
   }
 
   return (
     <div className="doctor-dashboard">
       <h2>Patient Dashboard</h2>
-      {patients.length > 0 ? (
-        patients.map((patient) => (
-          <div key={patient.id} className="patient-info">
-            <h3>Patient Information</h3>
-            <div className="imgName">
-              <img src={Logo} alt="Patient Avatar" />
-            </div>
-            <div className="info">
-              <p><strong>Name:</strong> {patient.firstName} {patient.lastName}</p>
-              <p><strong>Date of Birth:</strong> {new Date(patient.dob).toLocaleDateString()}</p>
-              <p><strong>Gender:</strong> {patient.gender}</p>
-              <p><strong>City:</strong> {patient.city}</p>
-              <p><strong>State:</strong> {patient.state}</p>
-              <p><strong>Zip Code:</strong> {patient.zip}</p>
-              <p><strong>Email:</strong> {patient.email}</p>
-              <p><strong>Emergency Contact Name:</strong> {patient.emergencyContactName}</p>
-              <p><strong>Emergency Contact Phone:</strong> {patient.emergencyContactPhone}</p>
-              <p><strong>Relationship:</strong> {patient.relationship}</p>
-            </div>
+      
+      {/* Search input field */}
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Search patient by full name..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+
+      {searchedPatient ? (
+        <div className="patient-info">
+          <h3>Patient Information</h3>
+          <div className="imgName">
+            <img src={Logo} alt="Patient Avatar" />
           </div>
-        ))
+          <div className="info">
+            <p><strong>Name:</strong> {searchedPatient.firstName} {searchedPatient.lastName}</p>
+            <p><strong>Date of Birth:</strong> {new Date(searchedPatient.dob).toLocaleDateString()}</p>
+            <p><strong>Gender:</strong> {searchedPatient.gender}</p>
+            <p><strong>City:</strong> {searchedPatient.city}</p>
+            <p><strong>State:</strong> {searchedPatient.state}</p>
+            <p><strong>Zip Code:</strong> {searchedPatient.zip}</p>
+            <p><strong>Email:</strong> {searchedPatient.email}</p>
+            <p><strong>Emergency Contact Name:</strong> {searchedPatient.emergencyContactName}</p>
+            <p><strong>Emergency Contact Phone:</strong> {searchedPatient.emergencyContactPhone}</p>
+            <p><strong>Relationship:</strong> {searchedPatient.relationship}</p>
+          </div>
+        </div>
       ) : (
-        <p>No patient data available.</p>
+        <p style={{color:'var(--second)',fontSize:"2rem"}}>Search patient</p>
       )}
     </div>
   );
