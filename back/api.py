@@ -309,30 +309,6 @@ def get_apppointments():
         if cnx is not None:
             cnx.close()
 
-@app.route('/api/appointments/<int:id>', methods=['DELETE'])
-def delete_appointment(id):
-    try:
-        cnx = mysql.connector.connect(**db_config)
-        cursor = cnx.cursor()
-
-        cursor.execute("DELETE FROM appointments WHERE id = %s", (id,))
-        cnx.commit()
-
-        if cursor.rowcount == 0:
-            return jsonify({'message': 'Appointment not found'}), 404
-
-        return jsonify({'message': 'Appointment deleted successfully'}), 200
-
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return jsonify({'error': 'An error occurred while deleting the appointment'}), 500
-
-    finally:
-        if 'cursor' in locals() and cursor is not None:
-            cursor.close()
-        if 'cnx' in locals() and cnx is not None:
-            cnx.close()
-
 @app.route('/api/medical_records', methods=['GET', 'POST'])
 def manage_medical_records():
     try:
