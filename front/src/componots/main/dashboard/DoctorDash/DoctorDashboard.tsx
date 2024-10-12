@@ -52,8 +52,9 @@ const DoctorDashboard: React.FC = () => {
   //find the patient whose full name matches the search term
   const searchedPatient = patients.find(
     (patient) =>
-      `${patient.firstName.toLowerCase()} ${patient.lastName.toLowerCase()}` ===
-      searchTerm.toLowerCase()
+      `${patient.firstName.toLowerCase()} ${patient.lastName.toLowerCase()}`.includes(
+        searchTerm.toLowerCase()
+      )
   );
 
   if (loading) {
@@ -77,13 +78,14 @@ const DoctorDashboard: React.FC = () => {
     <div className="doctor-dashboard">
       <h2>Patient Dashboard</h2>
       
-      {/* Search input field */}
+      {/* Search field */}
       <input
         type="text"
         className="search-input"
         placeholder="Search patient by full name..."
         value={searchTerm}
         onChange={handleSearchChange}
+        style={{marginLeft:'30%'}}
       />
 
       {searchedPatient ? (
@@ -104,9 +106,12 @@ const DoctorDashboard: React.FC = () => {
             <p><strong>Emergency Contact Phone:</strong> {searchedPatient.emergencyContactPhone}</p>
             <p><strong>Relationship:</strong> {searchedPatient.relationship}</p>
           </div>
+         
         </div>
+
+        
       ) : (
-        <p style={{color:'var(--second)',fontSize:"2rem"}}>Search patient</p>
+        <p style={{color:'var(--primary)',fontSize:"2rem",textAlign:'center'}}>Type full patient name</p>
       )}
     </div>
   );
