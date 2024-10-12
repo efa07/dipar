@@ -84,21 +84,17 @@ def signup():
     cnx = None
     cursor = None
     try:
-        # Connect to the MySQL database
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Insert user data into the users table(injection endateresa)
         insert_query = """
         INSERT INTO users (user_id, first_name, last_name, age, email, password_hash, role)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (user_id, first_name, last_name, age, encrypted_email, password_hash, role))
 
-        # Commit the transaction
         cnx.commit()
 
-        # Return a successful response
         return jsonify({'message': 'User registered successfully'}), 201
 
     except mysql.connector.Error as err:
@@ -106,7 +102,6 @@ def signup():
         return jsonify({'error': 'An error occurred while registering the user'}), 500
 
     finally:
-        # Close the cursor and cnx
         if cursor:
             cursor.close()
         if cnx:
@@ -238,6 +233,8 @@ def get_patients():
 
 @app.route('/api/appointments', methods=['POST'])
 def create_appointment():
+    cursor = None  # Initialize cursor to None
+    cnx = None     # Initialize cnx to None
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
@@ -276,6 +273,7 @@ def create_appointment():
             cursor.close()
         if cnx is not None:
             cnx.close()
+
 
 @app.route('/api/appointments', methods=['GET'])
 def get_apppointments():
