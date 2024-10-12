@@ -68,7 +68,7 @@ const Appointments = () => {
             <p><strong>Name:</strong> {appo.name}</p>
             <p><strong>Reason to visit:</strong> {appo.reason_for_visit}</p>
             <p><strong>Description:</strong> {appo.additional_notes}</p>
-            <button onClick={() => deleteAppointment(appo.id)} className="btn bg-danger text-white">Delete</button>
+            <button onClick={() => deleteAppointment(appo.id)} className="btn bg-warning text-white">Mark as Done</button>
           </div>
         ))
       ) : (

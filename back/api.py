@@ -54,7 +54,20 @@ db_config = {
 }
 
 def is_valid_email(email):
+    """
+    Validate the format of an email address.
+
+    This function uses a regular expression to check if the provided email address
+    matches the standard email format.
+
+    Args:
+        email (str): The email address to validate.
+
+    Returns:
+        bool: True if the email address is valid, False otherwise.
+    """
     """Validate email format using regex."""
+
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, email) is not None
 
