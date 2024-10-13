@@ -34,4 +34,23 @@
  .dap div {
     padding: 16px;
   }
+  .button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+  }
+  
+  .btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .bg-success {
+    background-color: #28a745; /* Green for Done */
+  }
+  
+  .bg-danger {
+    background-color: #dc3545; /* Red for Cancel */
+  }
   

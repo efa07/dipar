@@ -17,14 +17,14 @@ function Signup() {
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
 
     // Basic validation (you can add more complex validation)
@@ -123,7 +123,7 @@ function Signup() {
           <option value="admin">Admin</option>
           <option value="receptionist">Receptionist</option>
         </select>
-        <button type="submit">Signup</button>
+        <button type="submit">Rigister</button>
       </form>
     </div>
   );

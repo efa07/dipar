@@ -25,7 +25,6 @@ const NavNotice = () => {
             <li>Task one</li>
             <li>Task one</li>
             <li>Task one</li>
-            <li>Task one</li>
           </ul>
         </div>
       )}

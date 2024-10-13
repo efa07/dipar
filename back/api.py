@@ -17,7 +17,7 @@ import argon2
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}} )
+CORS(app)
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
@@ -75,9 +75,9 @@ def is_valid_email(email):
 def signup():
     data = request.get_json()
 
-    user_id = data['user_id']
-    first_name = data['first_name']
-    last_name = data['last_name']
+    # Extract data from the request
+    first_name = data['firstName']
+    last_name = data['lastName']
     age = data.get('age')
     email = data['email']
     password = data['password']
@@ -100,12 +100,14 @@ def signup():
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
+        # Prepare SQL insert query
         insert_query = """
-        INSERT INTO users (user_id, first_name, last_name, age, email, password_hash, role)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO users (first_name, last_name, age, email, password_hash, role)
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(insert_query, (user_id, first_name, last_name, age, encrypted_email, password_hash, role))
+        cursor.execute(insert_query, (first_name, last_name, age, encrypted_email, password_hash, role))
 
+        # Commit the transaction
         cnx.commit()
 
         return jsonify({'message': 'User registered successfully'}), 201
@@ -160,13 +162,100 @@ def login():
 
     except mysql.connector.Error as err:
         logging.error(f"MySQL Error: {err}")
-        return jsonify({'error': 'An error occurred'}), 500
+        return jsonify({'error': 'An error occurred during login'}), 500
 
     finally:
         if cursor:
             cursor.close()
         if cnx:
             cnx.close()
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+        """Retrieve all users from the database."""
+        cnx = None
+        cursor = None
+        try:
+            cnx = mysql.connector.connect(**db_config)
+            cursor = cnx.cursor()
+
+            # Query to fetch all users
+            query = "SELECT * FROM users"
+            cursor.execute(query)
+            users = cursor.fetchall()
+
+            # Prepare response data
+            user_list = [
+                {
+                    'id': user[0],
+                    'first_name': user[1],
+                    'last_name': user[2],
+                    'age': user[3],
+                    'email': cipher_suite.decrypt(user[4]).decode('utf-8'),  # Decrypt the email
+                    'role': user[5]
+                }
+                for user in users
+            ]
+
+            return jsonify(user_list), 200
+
+        except mysql.connector.Error as err:
+            logging.error(f"MySQL Error: {err}")
+            return jsonify({'error': 'An error occurred while retrieving users'}), 500
+
+        finally:
+            if cursor:
+                cursor.close()
+            if cnx:
+                cnx.close()
+
+@app.route('/api/users/<int:id>', methods=['PUT'])
+def update_user(id):
+    """Update user details in the database."""
+    data = request.get_json()
+
+    # Extract data from the request
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    age = data.get('age')
+    email = data.get('email')
+    role = data.get('role')
+
+    # Encrypt the email
+    encrypted_email = cipher_suite.encrypt(email.encode('utf-8'))
+
+    cnx = None
+    cursor = None
+    try:
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+
+        # Prepare SQL update query
+        update_query = """
+        UPDATE users
+        SET first_name = %s, last_name = %s, age = %s, email = %s, role = %s, updated_at = %s
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (first_name, last_name, age, encrypted_email, role, datetime.now(), id))
+
+        # Commit the transaction
+        cnx.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify({'message': 'User updated successfully!'}), 200
+
+    except mysql.connector.Error as err:
+        logging.error(f"MySQL Error: {err}")
+        return jsonify({'error': 'An error occurred while updating the user'}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.close()
+
 
 @app.route('/api/patients', methods=['POST'])
 def register_patient():
@@ -246,8 +335,8 @@ def get_patients():
 
 @app.route('/api/appointments', methods=['POST'])
 def create_appointment():
-    cursor = None  # Initialize cursor to None
-    cnx = None     # Initialize cnx to None
+    cursor = None
+    cnx = None
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
@@ -293,7 +382,7 @@ def get_apppointments():
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor(dictionary=True)
-        cursor.execute("SELECT id,name,appointment_date,reason_for_visit,additional_notes FROM appointments")
+        cursor.execute("SELECT id,name,appointment_date,reason_for_visit,additional_notes,status FROM appointments")
         appointments = cursor.fetchall()
         return jsonify(appointments)
     
@@ -304,6 +393,59 @@ def get_apppointments():
         logging.error(f"An error occurred during geting appointments: {str(e)}")
         return jsonify({'error': 'An error occurred during fetching '}), 500
     finally:
+        if cursor is not None:
+            cursor.close()
+        if cnx is not None:
+            cnx.close()
+
+@app.route('/api/appointments/<int:id>/done', methods=['PUT'])
+def mark_appointment_as_done(id):
+    cursor = None
+    cnx = None
+    try:
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+        cursor.execute("UPDATE appointments SET status = 'done' WHERE id = %s", (id,))
+        cnx.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'Appointment not found'}), 404
+        
+        return jsonify({'message': 'Appointment marked as done'}), 200
+    except mysql.connector.Error as err:
+        logging.error(f"Database error: {err}")
+        return jsonify({'error': 'Database error occurred'}), 500
+    except Exception as e:
+        logging.error(f"An error occurred while marking appointment as done: {str(e)}")
+        return jsonify({'error': 'An error occurred while marking appointment as done'}), 500
+    
+
+# Cancel appointment (update status to canceled)
+@app.route('/api/appointments/<int:id>/cancel', methods=['PUT'])
+def cancel_appointment(id):
+        cnx = None
+        cursor = None
+        try:
+            cnx = mysql.connector.connect(**db_config)
+            cursor = cnx.cursor()
+            cursor.execute("UPDATE appointments SET status = %s WHERE id = %s", ('canceled', id))
+            cnx.commit()
+
+            if cursor.rowcount == 0:
+                return jsonify({'error': 'Appointment not found'}), 404
+            
+            return jsonify({'message': 'Appointment canceled'}), 200
+        except mysql.connector.Error as err:
+            logging.error(f"Database error: {err}")
+            return jsonify({'error': 'Database error occurred'}), 500
+        except Exception as e:
+            logging.error(f"An error occurred while canceling the appointment: {str(e)}")
+            return jsonify({'error': 'An error occurred while canceling the appointment'}), 500
+        finally:
+            if cursor is not None:
+                cursor.close()
+            if cnx is not None:
+                cnx.close()
         if cursor is not None:
             cursor.close()
         if cnx is not None:

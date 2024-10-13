@@ -1,4 +1,8 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
+import AdminPanel from "./admin/AdminPanel"
+import UserCreationForm from "./admin/UserCreationForm";
+import UserList from "./admin/UserList";
+
 import DoctorDashboard from "./DoctorDash/DoctorDashboard";
 import Appointments from './DoctorDash/Appointments';
 import MedicalRecords from './DoctorDash/MedicalRecords';
@@ -41,6 +45,9 @@ const Dashboard = () => {
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path='/' element={<Welcom/>}/>
+        <Route path="/adminDashboard" element={<AdminPanel />} />
+        <Route path="/createUser" element={<UserCreationForm />} />
+        <Route path="/editUser" element={<UserList />} />
         <Route path="/dashboard" element={<DoctorDashboard />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/medical-records" element={<MedicalRecords />} />

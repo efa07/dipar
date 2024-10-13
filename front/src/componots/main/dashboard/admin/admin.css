@@ -1,0 +1,44 @@
+.admincontainer{
+margin-top: 60px;
+}
+
+.MuiAppBar-root {
+    background-color: #1976d2;
+}
+
+.container {
+    margin-top: 30px;
+}
+
+.MuiPaper-root {
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.MuiTypography-h6 {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Card Styles */
+.MuiCard-root {
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar Styles */
+.MuiAvatar-root {
+    background-color: #ff5722;
+}
+
+/* DataGrid Styles */
+.MuiDataGrid-root {
+    border: none;
+    border-radius: 12px;
+}
+
+/* Adjusting height of the DataGrid */
+.data-grid-container {
+    height: 400px;
+    width: 100%;
+}

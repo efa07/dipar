@@ -49,7 +49,7 @@ const DoctorDashboard: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  //find the patient whose full name matches the search term
+  // Find the patient whose full name matches the search term
   const searchedPatient = patients.find(
     (patient) =>
       `${patient.firstName.toLowerCase()} ${patient.lastName.toLowerCase()}`.includes(
@@ -77,16 +77,19 @@ const DoctorDashboard: React.FC = () => {
   return (
     <div className="doctor-dashboard">
       <h2>Patient Dashboard</h2>
-      
+
       {/* Search field */}
-      <input
+      <div className="searchField">
+        <input
         type="text"
         className="search-input"
         placeholder="Search patient by full name..."
         value={searchTerm}
         onChange={handleSearchChange}
-        style={{marginLeft:'30%'}}
+        style={{ marginLeft: '30%' }}
       />
+      </div>
+      
 
       {searchedPatient ? (
         <div className="patient-info">
@@ -94,24 +97,55 @@ const DoctorDashboard: React.FC = () => {
           <div className="imgName">
             <img src={Logo} alt="Patient Avatar" />
           </div>
-          <div className="info">
-            <p><strong>Name:</strong> {searchedPatient.firstName} {searchedPatient.lastName}</p>
-            <p><strong>Date of Birth:</strong> {new Date(searchedPatient.dob).toLocaleDateString()}</p>
-            <p><strong>Gender:</strong> {searchedPatient.gender}</p>
-            <p><strong>City:</strong> {searchedPatient.city}</p>
-            <p><strong>State:</strong> {searchedPatient.state}</p>
-            <p><strong>Zip Code:</strong> {searchedPatient.zip}</p>
-            <p><strong>Email:</strong> {searchedPatient.email}</p>
-            <p><strong>Emergency Contact Name:</strong> {searchedPatient.emergencyContactName}</p>
-            <p><strong>Emergency Contact Phone:</strong> {searchedPatient.emergencyContactPhone}</p>
-            <p><strong>Relationship:</strong> {searchedPatient.relationship}</p>
-          </div>
-         
+          <table className="patient-table">
+            <tbody>
+              <tr>
+                <td><strong>Name:</strong></td>
+                <td>{searchedPatient.firstName} {searchedPatient.lastName}</td>
+              </tr>
+              <tr>
+                <td><strong>Date of Birth:</strong></td>
+                <td>{new Date(searchedPatient.dob).toLocaleDateString()}</td>
+              </tr>
+              <tr>
+                <td><strong>Gender:</strong></td>
+                <td>{searchedPatient.gender}</td>
+              </tr>
+              <tr>
+                <td><strong>City:</strong></td>
+                <td>{searchedPatient.city}</td>
+              </tr>
+              <tr>
+                <td><strong>State:</strong></td>
+                <td>{searchedPatient.state}</td>
+              </tr>
+              <tr>
+                <td><strong>Zip Code:</strong></td>
+                <td>{searchedPatient.zip}</td>
+              </tr>
+              <tr>
+                <td><strong>Email:</strong></td>
+                <td>{searchedPatient.email}</td>
+              </tr>
+              <tr>
+                <td><strong>Emergency Contact Name:</strong></td>
+                <td>{searchedPatient.emergencyContactName}</td>
+              </tr>
+              <tr>
+                <td><strong>Emergency Contact Phone:</strong></td>
+                <td>{searchedPatient.emergencyContactPhone}</td>
+              </tr>
+              <tr>
+                <td><strong>Relationship:</strong></td>
+                <td>{searchedPatient.relationship}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        
       ) : (
-        <p style={{color:'var(--primary)',fontSize:"2rem",textAlign:'center'}}>Type full patient name</p>
+        <p style={{ color: 'var(--primary)', fontSize: "2rem", textAlign: 'center' }}>
+          Type full patient name
+        </p>
       )}
     </div>
   );
