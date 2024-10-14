@@ -8,7 +8,7 @@ const UserCreationForm: React.FC = () => {
         age: '',
         email: '',
         password: '',
-        role: '',
+        role: 'Guest',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
@@ -101,6 +101,7 @@ const UserCreationForm: React.FC = () => {
                     <MenuItem value="nurse">Nurse</MenuItem>
                     <MenuItem value="lab-staff">Lab Staff</MenuItem>
                     <MenuItem value="receptionist">Receptionist</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
                 </TextField>
                 <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                     Create User

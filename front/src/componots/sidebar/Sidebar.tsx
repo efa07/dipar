@@ -12,7 +12,7 @@ const Sidebar = () => {
   return (
     <aside id="sidebar" className="sidebar mt-4">
       <Routes>
-        <Route path="/" element={<MainSidebar />} />
+        {/* <Route path="/" element={<MainSidebar />} /> */}
         <Route path="/login/*" element={<MainSidebar />} />
         <Route path="/register/*" element={<Register />} />
             <Route path="/doctor/*" element={<DoctorSidebar />} />

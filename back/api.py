@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,session
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
@@ -13,7 +13,9 @@ from flask import Flask, request, jsonify
 from werkzeug.security import generate_password_hash,check_password_hash
 from argon2 import PasswordHasher
 import argon2
-
+from flask_session import Session
+import redis
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -41,6 +43,18 @@ DATABASE_USER = os.environ.get('DATABASE_USER')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 DATABASE_HOST = os.environ.get('DATABASE_HOST')
 DATABASE_NAME = os.environ.get('DATABASE_NAME')
+app.secret_key = os.environ.get('App.secret_key')
+
+# Configure the Redis connection
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_KEY_PREFIX'] = 'myapp:'  # Optional: To prevent key collision
+app.config['SESSION_REDIS'] = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+# Initialize the session
+Session(app)
+
 
 if not all([DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME]):
     raise ValueError("Database configuration is incomplete. Please set all required environment variables.")
@@ -71,7 +85,28 @@ def is_valid_email(email):
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, email) is not None
 
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            return jsonify({'error': 'Unauthorized access'}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
+def role_required(role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'role' not in session or session['role'] != role:
+                return jsonify({'error': 'Access denied'}), 403
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
 @app.route('/api/signup', methods=['POST'])
+@role_required('admin')
 def signup():
     data = request.get_json()
 
@@ -152,6 +187,10 @@ def login():
         if user:
             try:
                 if ph.verify(user[0], password):
+                    # Store user information in Redis session
+                    session['user'] = email
+                    session['role'] = user[1]
+
                     return jsonify({'message': 'Login successful', 'role': user[1]}), 200
             except argon2.exceptions.VerifyMismatchError:
                 logging.error(f"Password mismatch for email: {email}")
@@ -170,81 +209,93 @@ def login():
         if cnx:
             cnx.close()
 
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    # Clear session on logout
+    session.pop('user', None)
+    session.pop('role', None)
+    return jsonify({'message': 'Logged out successfully'}), 200
+
 @app.route('/api/users', methods=['GET'])
+@role_required('admin')
 def get_users():
-        """Retrieve all users from the database."""
-        cnx = None
-        cursor = None
-        try:
-            cnx = mysql.connector.connect(**db_config)
-            cursor = cnx.cursor()
-
-            # Query to fetch all users
-            query = "SELECT * FROM users"
-            cursor.execute(query)
-            users = cursor.fetchall()
-
-            # Prepare response data
-            user_list = [
-                {
-                    'id': user[0],
-                    'first_name': user[1],
-                    'last_name': user[2],
-                    'age': user[3],
-                    'email': cipher_suite.decrypt(user[4]).decode('utf-8'),  # Decrypt the email
-                    'role': user[5]
-                }
-                for user in users
-            ]
-
-            return jsonify(user_list), 200
-
-        except mysql.connector.Error as err:
-            logging.error(f"MySQL Error: {err}")
-            return jsonify({'error': 'An error occurred while retrieving users'}), 500
-
-        finally:
-            if cursor:
-                cursor.close()
-            if cnx:
-                cnx.close()
-
-@app.route('/api/users/<int:id>', methods=['PUT'])
-def update_user(id):
-    """Update user details in the database."""
-    data = request.get_json()
-
-    # Extract data from the request
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    age = data.get('age')
-    email = data.get('email')
-    role = data.get('role')
-
-    # Encrypt the email
-    encrypted_email = cipher_suite.encrypt(email.encode('utf-8'))
-
+    """Retrieve all users from the database."""
     cnx = None
     cursor = None
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Prepare SQL update query
-        update_query = """
-        UPDATE users
-        SET first_name = %s, last_name = %s, age = %s, email = %s, role = %s, updated_at = %s
-        WHERE id = %s
-        """
-        cursor.execute(update_query, (first_name, last_name, age, encrypted_email, role, datetime.now(), id))
+        # Correctly select user_id instead of id
+        query = "SELECT user_id, first_name, last_name, age, email, role FROM users"
+        cursor.execute(query)
+        users = cursor.fetchall()
 
-        # Commit the transaction
+        # Prepare response data
+        user_list = [
+            {
+                'user_id': user[0],
+                'first_name': user[1],
+                'last_name': user[2],
+                'age': user[3],
+                'email': cipher_suite.decrypt(user[4]).decode('utf-8'),  # Decrypt the email
+                'role': user[5]
+            }
+            for user in users
+        ]
+
+        return jsonify(user_list), 200
+
+    except mysql.connector.Error as err:
+        # Log the detailed error for debugging
+        logging.error(f"MySQL Error: {err}")
+        # Return the error message for easier debugging
+        return jsonify({'error': str(err)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if cnx:
+            cnx.close()
+
+
+@app.route('/api/users/<int:user_id>', methods=['PUT'])
+@role_required('admin')
+def update_user(user_id):
+    """Update a user's information by ID."""
+    cnx = None
+    cursor = None
+    try:
+        # Connect to the database
+        cnx = mysql.connector.connect(**db_config)
+        cursor = cnx.cursor()
+
+        # Get the JSON data from the request
+        data = request.json
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        age = data.get('age')
+        email = data.get('email')
+        role = data.get('role')
+
+        # Validate required fields
+        if not all([first_name, last_name, age, email, role]):
+            return jsonify({'error': 'Missing fields'}), 400
+
+        # Update user query
+        query = """
+        UPDATE users 
+        SET first_name = %s, last_name = %s, age = %s, email = %s, role = %s
+        WHERE user_id = %s
+        """
+        cursor.execute(query, (first_name, last_name, age, email, role, user_id))
         cnx.commit()
 
         if cursor.rowcount == 0:
             return jsonify({'error': 'User not found'}), 404
 
-        return jsonify({'message': 'User updated successfully!'}), 200
+        return jsonify({'message': 'User updated successfully'}), 200
 
     except mysql.connector.Error as err:
         logging.error(f"MySQL Error: {err}")
@@ -452,6 +503,7 @@ def cancel_appointment(id):
             cnx.close()
 
 @app.route('/api/medical_records', methods=['GET', 'POST'])
+@login_required
 def manage_medical_records():
     try:
         cnx = mysql.connector.connect(**db_config)

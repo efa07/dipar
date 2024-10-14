@@ -10,7 +10,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
@@ -28,8 +28,10 @@ const LoginPage = () => {
             const result = await response.json();
             
             if (response.ok) {
-                // Get the user's role from the response
                 const { role } = result;
+                
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userRole', role);
                 
                 // Redirect based on user role
                 switch (role) {
@@ -37,16 +39,16 @@ const LoginPage = () => {
                         navigate('/doctor/dashboard');
                         break;
                     case 'nurse':
-                        navigate('/nurse');
+                        navigate('/nurse/nurseDash');
                         break;
-                    case 'lab_staff':
-                        navigate('/lab');
+                    case 'lab-staff':
+                        navigate('/medicallab/lab-tests');
                         break;
                     case 'admin':
                         navigate('/admin');
                         break;
                     case 'receptionist':
-                        navigate('/receptionist');
+                        navigate('/register/new');
                         break;
                     default:
                         navigate('/');
@@ -57,7 +59,7 @@ const LoginPage = () => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 throw new Error(result.error || 'Login failed');
             }
-        } catch (error) {
+        } catch (error:any) {
             setError(error.message);
         } finally {
             setLoading(false);

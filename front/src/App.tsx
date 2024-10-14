@@ -9,22 +9,27 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import Header from "./componots/Nav/Header";
 import Sidebar from "./componots/sidebar/Sidebar";
 import Dashboard from "./componots/main/dashboard/DashBoard";
-import { BrowserRouter as Router, Routes, Route, useLocation, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 import Login from "./componots/Login/Login";
 import SignUp from "./componots/Signup/Signup";
 import NotFound from "./componots/NotFound";
 import Welcom from "./componots/main/dashboard/welcom/Welcom";
+import PrivateRoute from './componots/context/PrivateRoute';
+import { AuthProvider } from './componots/context/AuthContex'; 
 
 // Separate Component to handle layout
 const MainLayout = () => {
   const location = useLocation();
-  const hideHeaderAndSidebar = location.pathname === '/login' || location.pathname === '/signup';
+  const hideHeaderAndSidebar = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/' || location.pathname === '*';
+
+  // Conditionally add a class to the app-container
+  const isSpecialRoute = location.pathname === '/' || location.pathname === '/login';
 
   return (
     <>
       {!hideHeaderAndSidebar && <Header />}
-      <div className="app-container">
+      <div className={`app-container ${isSpecialRoute ? 'special-container' : ''}`}>
         {!hideHeaderAndSidebar && (
           <div className="sidebarapp">
             <Sidebar />
@@ -34,27 +39,28 @@ const MainLayout = () => {
           <Routes>
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/doctor/*" element={<Dashboard />} />
-            <Route path="/nurse/*" element={<Dashboard />} />
-            <Route path="/medicallab/*" element={<Dashboard />} />
-            <Route path="/pharmacy/*" element={<Dashboard />} />
-            <Route path="/radiology/*" element={<Dashboard />} />
-            <Route path="/admin/*" element={<Dashboard />} />
-            <Route path="/register/*" element={<Dashboard />} />
+            <Route path="/signup" element={<PrivateRoute requiredRole="admin"><SignUp /></PrivateRoute>} />
+            <Route path="/doctor/*" element={<PrivateRoute requiredRole="doctor"><Dashboard /></PrivateRoute>} />
+            <Route path="/nurse/*" element={<PrivateRoute requiredRole="nurse"><Dashboard /></PrivateRoute>} />
+            <Route path="/medicallab/*" element={<PrivateRoute requiredRole="lab-staff"><Dashboard /></PrivateRoute>} />
+            <Route path="/admin/*" element={<PrivateRoute requiredRole="admin"><Dashboard /></PrivateRoute>} />
+            <Route path="/register/*" element={<PrivateRoute requiredRole="receptionist"><Dashboard /></PrivateRoute>} />
             <Route path="/" element={<Welcom />} />
           </Routes>
         </main>
       </div>
     </>
   );
-}
+};
+
 
 function App() {
   return (
+    <AuthProvider>
      <Router>
       <MainLayout />
     </Router>
+    </AuthProvider>
    
   );
 }

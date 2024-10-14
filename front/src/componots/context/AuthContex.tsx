@@ -1,38 +1,84 @@
-import { createContext, useEffect, useReducer, ReactNode } from "react";
-import AuthReducer from "./AuthReducer";
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface AuthState {
-    currentUser: any;
+interface User {
+    email: string;
+    role: string;
 }
 
-interface AuthContextProps {
-    currentUser: any;
-    dispatch: React.Dispatch<any>;
+interface AuthContextType {
+    user: User | null;
+    loading: boolean;
+    login: (email: string, password: string) => Promise<boolean>;
+    logout: () => void;
 }
 
-const INITIAL_STATE: AuthState = {
-    currentUser: JSON.parse(localStorage.getItem("currentUser") as string) || null,
-};
+// Create the AuthContext
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthContext = createContext<AuthContextProps>({
-    currentUser: INITIAL_STATE.currentUser,
-    dispatch: () => null,
-});
-
-interface AuthContextProviderProps {
+interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+// AuthProvider component to wrap around your application
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+    const [user, setUser] = useState<User | null>(null); // Store user data here
+    const [loading, setLoading] = useState(true);
+
+    // Mock authentication function (you can replace this with your actual API calls)
+    const login = async (email: string, password: string): Promise<boolean> => {
+        const response = await fetch('http://127.0.0.1:5000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+    
+        const result = await response.json();
+    
+        if (response.ok) {
+            const userData = { email, role: result.role };
+            setUser(userData);
+            // Store user in localStorage
+            localStorage.setItem('user', JSON.stringify(userData));
+            return true;
+        } else {
+            throw new Error(result.error || 'Login failed');
+        }
+    };
+    
+
+    const logout = () => {
+        setUser(null);
+    };
 
     useEffect(() => {
-        localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
-    }, [state.currentUser]);
+        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        if (storedUser) {
+            setUser(storedUser);
+        }
+        setLoading(false);  // Important: Set loading to false once done
+    }, []);
+    
+
+    const value = {
+        user,
+        loading,
+        login,
+        logout,
+    };
 
     return (
-        <AuthContext.Provider value={{ currentUser: state.currentUser, dispatch }}>
-            {children}
+        <AuthContext.Provider value={value}>
+            {!loading && children}
         </AuthContext.Provider>
     );
+};
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };

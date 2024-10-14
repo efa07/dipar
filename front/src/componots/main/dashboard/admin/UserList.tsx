@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import "./userlist.css"
+import "./userlist.css";
 
 interface User {
     id: number;
@@ -28,18 +28,29 @@ const UsersList: React.FC = () => {
     }, []);
 
     const fetchUsers = async () => {
-        const response = await fetch('http://127.0.0.1:5000/api/users');
-        if (response.ok) {
-            const data = await response.json();
-            setUsers(data);
-        } else {
-            console.error('Failed to fetch users');
+        try {
+            const response = await fetch('http://127.0.0.1:5000/api/users');
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data);
+            } else {
+                console.error('Failed to fetch users');
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
         }
     };
 
     const handleEdit = (user: User) => {
         setEditingUser(user);
-        setFormData(user);
+        setFormData({
+            id: user.id, 
+            first_name: user.first_name,
+            last_name: user.last_name,
+            age: user.age,
+            email: user.email,
+            role: user.role,
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,21 +60,25 @@ const UsersList: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
-        const response = await fetch(`http://127.0.0.1:5000/api/users/${formData.id}`, {
-            method: 'PUT', // Use PUT for updating
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/api/users/${formData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        if (response.ok) {
-            alert('User updated successfully!');
-            fetchUsers(); // Refresh the list after updating
-            setEditingUser(null); // Close the edit form
-        } else {
-            alert('Failed to update user');
+            if (response.ok) {
+                alert('User updated successfully!');
+                fetchUsers(); // Refresh user list after update
+                setEditingUser(null); // Clear form after editing
+            } else {
+                alert('Failed to update user');
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+            alert('An error occurred while updating the user');
         }
     };
 
@@ -93,7 +108,9 @@ const UsersList: React.FC = () => {
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="primary" onClick={() => handleEdit(user)}>Edit</Button>
+                                    <Button variant="contained" color="primary" onClick={() => handleEdit(user)}>
+                                        Edit
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -150,6 +167,7 @@ const UsersList: React.FC = () => {
                         onChange={handleChange}
                         fullWidth
                         margin="normal"
+                        SelectProps={{ native: true }}
                     >
                         <option value="doctor">Doctor</option>
                         <option value="nurse">Nurse</option>
