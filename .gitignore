@@ -3,3 +3,6 @@
 /ehospital-systems-7N4fLzcqzr_blog.jpg
 /app.log
 .log
+/node_modules
+/dist
+.env

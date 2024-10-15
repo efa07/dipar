@@ -106,7 +106,6 @@ def role_required(role):
 
 
 @app.route('/api/signup', methods=['POST'])
-@role_required('admin')
 def signup():
     data = request.get_json()
 
@@ -163,35 +162,39 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    # Encrypt the email to match the stored value in the database
-    encrypted_email = cipher_suite.encrypt(email.encode('utf-8'))
-
     cnx = None
     cursor = None
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        query = "SELECT email, password_hash, role FROM users"
+        # Query to get user details by email
+        query = "SELECT user_id, email, password_hash, role FROM users"
         cursor.execute(query)
         users = cursor.fetchall()
 
         # Decrypt and find a match for the provided email
         user = None
-        for db_email, password_hash, role in users:
+        for user_id, db_email, password_hash, role in users:
             decrypted_email = cipher_suite.decrypt(db_email).decode('utf-8')
             if decrypted_email == email:
-                user = (password_hash, role)
+                user = (user_id, password_hash, role)
                 break
 
         if user:
+            # Correct password verification
             try:
-                if ph.verify(user[0], password):
+                if ph.verify(user[1], password):  # Verify password hash
                     # Store user information in Redis session
-                    session['user'] = email
-                    session['role'] = user[1]
+                    session['user'] = user[0]  # Store user_id in session
+                    session['role'] = user[2]  # Store role in session
 
-                    return jsonify({'message': 'Login successful', 'role': user[1]}), 200
+                    # Return user_id, message, and role to frontend
+                    return jsonify({
+                        'message': 'Login successful',
+                        'user_id': user[0],  # Send user_id to frontend
+                        'role': user[2]
+                    }), 200
             except argon2.exceptions.VerifyMismatchError:
                 logging.error(f"Password mismatch for email: {email}")
                 return jsonify({'error': 'Invalid email or password'}), 401
@@ -218,7 +221,6 @@ def logout():
     return jsonify({'message': 'Logged out successfully'}), 200
 
 @app.route('/api/users', methods=['GET'])
-@role_required('admin')
 def get_users():
     """Retrieve all users from the database."""
     cnx = None
@@ -261,7 +263,6 @@ def get_users():
 
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
-@role_required('admin')
 def update_user(user_id):
     """Update a user's information by ID."""
     cnx = None
@@ -503,7 +504,6 @@ def cancel_appointment(id):
             cnx.close()
 
 @app.route('/api/medical_records', methods=['GET', 'POST'])
-@login_required
 def manage_medical_records():
     try:
         cnx = mysql.connector.connect(**db_config)
