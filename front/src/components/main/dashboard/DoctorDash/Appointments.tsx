@@ -36,7 +36,6 @@ const Appointments = () => {
     fetchAppointments();
   }, []);
 
-  // Function to mark an appointment as done
   const markAsDone = async (id: number) => {
     try {
       const response = await fetch(`http://127.0.0.1:5000/api/appointments/${id}/done`, {
@@ -48,10 +47,10 @@ const Appointments = () => {
       // Update the state to appointment is done
       setAppointments((prevAppointments) =>
         prevAppointments.map((appo) =>
-          appo.id === id ? { ...appo, status: 'done' } : appo,
-          toast.success("Appointment Done.")
-        
-      ));
+          appo.id === id ? { ...appo, status: 'done' } : appo
+        )
+      );
+      toast.success("Appointment Done.");
     } catch (err: any) {
       setError(err.message);
     }
@@ -66,17 +65,26 @@ const Appointments = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      // Update the state to appointment is canceled
       setAppointments((prevAppointments) =>
         prevAppointments.map((appo) =>
-          appo.id === id ? { ...appo, status: 'canceled' } : appo,
-          toast.error("Appointment canceled.")
+          appo.id === id ? { ...appo, status: 'canceled' } : appo
         )
       );
+      toast.error("Appointment canceled.");
     } catch (err: any) {
       setError(err.message);
     }
   };
+
+  // Sort appointments: pending first, then done/canceled
+  const sortedAppointments = [...appointments].sort((a, b) => {
+    if (a.status === 'pending' && (b.status === 'done' || b.status === 'canceled')) {
+      return -1; // Move pending appointments up
+    } else if ((a.status === 'done' || a.status === 'canceled') && b.status === 'pending') {
+      return 1; // Move done/canceled appointments down
+    }
+    return 0; // Keep the same order otherwise
+  });
 
   if (loading) {
     return (
@@ -90,8 +98,8 @@ const Appointments = () => {
   return (
     <div className="dap">
       <h1>Appointments</h1>
-      {appointments.length > 0 && appointments.find(s => s.status === "pending") ? (
-        appointments.map((appo) => (
+      {sortedAppointments.length > 0 ? (
+        sortedAppointments.map((appo) => (
           <div key={appo.id} className="appointment-item">
             <p><strong>Date:</strong> {appo.appointment_date}</p>
             <p><strong>Name:</strong> {appo.name}</p>
@@ -119,9 +127,7 @@ const Appointments = () => {
       ) : (
         <div className="appointment-item"><p>No Appointments</p></div>
       )}
-       <ToastContainer 
-         
-        />
+      <ToastContainer />
     </div>
   );
 };

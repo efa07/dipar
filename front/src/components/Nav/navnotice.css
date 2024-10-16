@@ -47,9 +47,9 @@
 .nav-notice-dropdown ul{
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
-  height: 100%;
+  height: 95%;
 }
 .nav-notice-dropdown ul li{
   border-bottom: 2px solid var(--primary);
