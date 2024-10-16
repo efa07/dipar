@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, MenuItem, Button, Typography, Container, Box } from '@mui/material';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserCreationForm: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -27,9 +29,9 @@ const UserCreationForm: React.FC = () => {
             body: JSON.stringify(formData),
         });
         if (response.ok) {
-            alert('User created successfully!');
+            toast.success('User created successfully');
         } else {
-            alert('Failed to create user');
+            toast.error('Failed to create user');
         }
     };
 
@@ -107,6 +109,7 @@ const UserCreationForm: React.FC = () => {
                     Create User
                 </Button>
             </form>
+            <ToastContainer />
         </Container>
     );
 };

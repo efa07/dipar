@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./rdb.css";
 
 interface FormData {
@@ -47,7 +49,7 @@ const ReceptionistDashboard: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Patient registered successfully!")
+        toast.success("Patient registered successfully.");
         setFormData({
           firstName: "",
           lastName: "",
@@ -62,7 +64,7 @@ const ReceptionistDashboard: React.FC = () => {
           relationship: "",
         });
       } else {
-        alert("Registration failed")
+        toast.error("Failed to register patient. Please try again.");
         
       }
     } catch (error) {
@@ -207,6 +209,17 @@ const ReceptionistDashboard: React.FC = () => {
             <button type="submit">Register Patient</button>
           </div>
         </form>
+        <ToastContainer 
+          position="top-center"  
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </div>
   );

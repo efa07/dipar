@@ -1,5 +1,7 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import "./pp.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Prescription {
   id: number;
@@ -92,15 +94,15 @@ const Prescriptions: React.FC = () => {
           doctor_id: form.doctor_id,
           patient_id: ''
         });
-        alert('Prescription added successfully!');
+        toast.success('Prescription added successfully.');
       } else {
         const errorData = await response.json();
         console.error('Error adding prescription:', errorData.message || response.statusText);
-        alert(`Error: ${errorData.message || response.statusText}`);
+        toast.error(`Error adding prescription: ${errorData.message || response.statusText}`);
       }
     } catch (error: any) {
       console.error('Network error:', error.message);
-      alert(`Network error: ${error.message}`);
+      toast.error('Network error: Failed to add prescription.');
     }
   };
 
@@ -192,6 +194,7 @@ const Prescriptions: React.FC = () => {
           </label>
           <button type="submit">Add Prescription</button>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

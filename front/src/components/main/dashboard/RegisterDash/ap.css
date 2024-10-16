@@ -11,7 +11,6 @@
 
 .ap .appointment-form {
   width: 100%;
-  max-width: 800px;
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
@@ -41,7 +40,6 @@
 .form-group input[type="time"],
 .form-group textarea,
 .form-group select {
-  width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;

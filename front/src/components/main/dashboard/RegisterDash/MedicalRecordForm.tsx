@@ -1,4 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./mr.css"
 
 interface FormData {
@@ -49,7 +51,7 @@ const MedicalRecordForm = () => {
       }
 
       const result = await response.json();
-      alert("Medical record saved successfully.");
+      toast.success("Medical record saved successfully.");
       setSuccessMessage(result.message || 'Medical record saved successfully.');
     } catch (error: any) {
       setErrorMessage(error.message);
@@ -135,6 +137,17 @@ const MedicalRecordForm = () => {
           {successMessage && <p className="success">{successMessage}</p>}
           <button type="submit">Save Medical Record</button>
         </form>
+        <ToastContainer 
+          position="top-center"  
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </div>
   );

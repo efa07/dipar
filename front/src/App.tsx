@@ -25,6 +25,7 @@ const MainLayout = () => {
 
   // Conditionally add a class to the app-container
   const isSpecialRoute = location.pathname === '/' || location.pathname === '/login';
+  const isLogin = location.pathname === '/login';
 
   return (
     <>
@@ -35,7 +36,7 @@ const MainLayout = () => {
             <Sidebar />
           </div>
         )}
-        <main className="main-content">
+        <main className={`main-content ${isLogin ? 'login-scale' : ''}`}>
           <Routes>
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />

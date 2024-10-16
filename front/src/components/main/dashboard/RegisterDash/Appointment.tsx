@@ -1,7 +1,8 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./ap.css";
 
-// Define a type for the form data
 interface FormData {
   name: string;
   appointmentDate: string;
@@ -46,15 +47,15 @@ function AppointmentForm() {
       });
 
       if (!response.ok) {
-        alert("Failed to schedule appointment. Please try again.");
         throw new Error('Failed to schedule appointment. Please try again.');
       }
 
       const result = await response.json();
-      alert("Appointment scheduled successfully.");
       setSuccessMessage(result.message || 'Appointment scheduled successfully.');
+      toast.success("Appointment scheduled successfully.");
     } catch (error: any) {
       setErrorMessage(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -114,11 +115,10 @@ function AppointmentForm() {
               onChange={handleChange}
               required
             >
-              <option value="OPD" >OPD</option>
-              <option value="radiology" >Radiology</option>
-              <option value="lab" >Lab</option>
-              <option value="surgery" >Surgery</option>
-
+              <option value="OPD">OPD</option>
+              <option value="radiology">Radiology</option>
+              <option value="lab">Lab</option>
+              <option value="surgery">Surgery</option>
             </select>
           </div>
           <div className="form-group">
@@ -130,11 +130,9 @@ function AppointmentForm() {
               onChange={handleChange}
               required
             >
-              <option value="doc1" >Doctor one</option>
-              <option value="doc2" >Doctor two</option>
-              <option value="doc3" >Doctor thre</option>
-
-
+              <option value="doc1">Doctor one</option>
+              <option value="doc2">Doctor two</option>
+              <option value="doc3">Doctor three</option>
             </select>
           </div>
           <div className="form-group">
@@ -184,6 +182,17 @@ function AppointmentForm() {
           {successMessage && <p className="success">{successMessage}</p>}
           <button type="submit">Schedule Appointment</button>
         </form>
+        <ToastContainer 
+          position="top-center"  
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </div>
   );

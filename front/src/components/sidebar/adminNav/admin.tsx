@@ -36,11 +36,7 @@ const sidebarItems: SidebarItem[] = [
       },
     ],
   },
-  {
-    icon: "bi bi-bar-chart",
-    text: "Reports",
-    to: "/admin/reports",
-  },
+  
 
  
 ];

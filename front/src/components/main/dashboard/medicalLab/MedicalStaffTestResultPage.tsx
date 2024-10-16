@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./mst.css"
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface TestResult {
   test_name: string;
@@ -80,7 +82,7 @@ const MedicalStaffTestResultPage: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Lab test results submitted successfully.");
+        toast.success("Lab test results submitted successfully!");
         setFormData({
           request_id: "",
           test_results: [{ test_name: "", result: "", comments: "" }],
@@ -88,10 +90,12 @@ const MedicalStaffTestResultPage: React.FC = () => {
       } else {
         const errorData = await response.json();
         setError(`Failed to submit lab test results: ${errorData.error}`);
+        toast.error(`Failed to submit lab test results: ${errorData.error}`);
       }
     } catch (error) {
       console.error("Error submitting lab test results:", error);
       setError("An error occurred while submitting the form.");
+      toast.error("An error occurred while submitting the form.");
     } finally {
       setIsLoading(false);
     }
@@ -199,6 +203,7 @@ const MedicalStaffTestResultPage: React.FC = () => {
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

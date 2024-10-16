@@ -9,6 +9,7 @@
 .appointment-item {
     border: 1px solid #34d399;
     padding: 16px;
+    width: 85%;
     border-radius: 8px;
     background-color: var(--bg-light);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -36,7 +37,7 @@
   }
   .button-group {
     display: flex;
-    gap: 10px; /* Space between buttons */
+    gap: 100px; 
   }
   
   .btn {
@@ -47,10 +48,10 @@
   }
   
   .bg-success {
-    background-color: #28a745; /* Green for Done */
+    background-color: #28a745;
   }
   
   .bg-danger {
-    background-color: #dc3545; /* Red for Cancel */
+    background-color: #dc3545;
   }
   

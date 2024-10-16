@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./ap.css";
 import ScaleLoader from "react-spinners/ScaleLoader";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Appointment {
   id: number;
@@ -46,9 +48,10 @@ const Appointments = () => {
       // Update the state to appointment is done
       setAppointments((prevAppointments) =>
         prevAppointments.map((appo) =>
-          appo.id === id ? { ...appo, status: 'done' } : appo
-        )
-      );
+          appo.id === id ? { ...appo, status: 'done' } : appo,
+          toast.success("Appointment Done.")
+        
+      ));
     } catch (err: any) {
       setError(err.message);
     }
@@ -66,7 +69,8 @@ const Appointments = () => {
       // Update the state to appointment is canceled
       setAppointments((prevAppointments) =>
         prevAppointments.map((appo) =>
-          appo.id === id ? { ...appo, status: 'canceled' } : appo
+          appo.id === id ? { ...appo, status: 'canceled' } : appo,
+          toast.error("Appointment canceled.")
         )
       );
     } catch (err: any) {
@@ -115,6 +119,9 @@ const Appointments = () => {
       ) : (
         <div className="appointment-item"><p>No Appointments</p></div>
       )}
+       <ToastContainer 
+         
+        />
     </div>
   );
 };

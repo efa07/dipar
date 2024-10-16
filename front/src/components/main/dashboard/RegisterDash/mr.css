@@ -1,11 +1,11 @@
 .mr{
   height: auto;
-  margin-top: 50px;
+  margin-top: 70px;
   
 }
 
 .mr .medical-record-form {
-    max-width: 800px;
+    max-width: 96%;
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;

@@ -3,7 +3,7 @@ import "./navnotice.css";
 
 const NavNotice = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -21,10 +21,7 @@ const NavNotice = () => {
         <div className="nav-notice-dropdown">
       
           <ul>
-            <li>Task one</li>
-            <li>Task one</li>
-            <li>Task one</li>
-            <li>Task one</li>
+           
           </ul>
         </div>
       )}

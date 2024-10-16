@@ -76,8 +76,7 @@ const DoctorDashboard: React.FC = () => {
 
   return (
     <div className="doctor-dashboard">
-      <h2>Patient Dashboard</h2>
-
+<h2>Patient Information</h2>
       {/* Search field */}
       <div className="searchField">
         <input
@@ -93,7 +92,7 @@ const DoctorDashboard: React.FC = () => {
 
       {searchedPatient ? (
         <div className="patient-info">
-          <h3>Patient Information</h3>
+
           <div className="imgName">
             <img src={Logo} alt="Patient Avatar" />
           </div>

@@ -1,5 +1,7 @@
 .pt{
-margin-top: 50px;
+margin-top: 60px;
+background-color: #f9f9f9;
+
 }
 
 .pt .form-container {
@@ -24,7 +26,7 @@ margin-top: 50px;
 .pt .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%;
+  width: 98%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;

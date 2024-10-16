@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AppBar, Toolbar, Typography, Container, Grid, Paper, Box, Card, CardContent, CardHeader, IconButton, Avatar } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import {  GridColDef } from '@mui/x-data-grid';
+
 import "./admin.css";
 
 // Define the row type for TypeScript
@@ -31,40 +31,7 @@ const AdminPanel: React.FC = () => {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={8} lg={9}>
-                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
-                                <Typography variant="h6" gutterBottom>
-                                    User Statistics
-                                </Typography>
-                                <Box sx={{ flexGrow: 1 }}>
-                                    {/* Add your chart component here */}
-                                </Box>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Card>
-                                <CardHeader
-                                    avatar={<Avatar aria-label="recipe">R</Avatar>}
-                                    action={
-                                        <IconButton aria-label="settings">
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                    }
-                                    title="Recent Activity"
-                                    subheader="September 14, 2023"
-                                />
-                                <CardContent>
-                                    <Typography variant="body2" color="text.secondary">
-                                        User John Doe updated his profile.
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        
-                    </Grid>
-                </Container>
+                
             </Box>
         </div>
     );

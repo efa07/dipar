@@ -1,9 +1,11 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./ptf.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FormData {
   patientName: string;
-  patientId: string;  // Change to string
+  patientId: string; 
   labTests: string[];
   notes: string;
 }
@@ -11,7 +13,7 @@ interface FormData {
 const PatientLabTestForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     patientName: "",
-    patientId: "",  // Initialize as empty string
+    patientId: "",
     labTests: [],
     notes: "",
   });
@@ -41,7 +43,7 @@ const PatientLabTestForm: React.FC = () => {
     const formattedData = {
       patient_name: formData.patientName,
       patient_id: parseInt(formData.patientId, 10),  // Convert to integer
-      selected_tests: formData.labTests,  // Send as array, not JSON string
+      selected_tests: formData.labTests, 
       notes: formData.notes,
     };
 
@@ -55,7 +57,7 @@ const PatientLabTestForm: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Lab test request submitted successfully.");
+        toast.success("Lab test request submitted successfully.");
         // Reset form data after successful submission
         setFormData({
           patientName: "",
@@ -65,11 +67,11 @@ const PatientLabTestForm: React.FC = () => {
         });
       } else {
         const errorData = await response.json();
-        alert(`Failed to submit lab test request: ${errorData.error}`);
+        toast.error(`Failed to submit lab test request: ${errorData.error}`);
       }
     } catch (error) {
       console.error("Error submitting lab test request:", error);
-      alert("An error occurred while submitting the form.");
+      toast.error("An error occurred while submitting the form.");
     }
   };
 
@@ -149,9 +151,11 @@ const PatientLabTestForm: React.FC = () => {
             <button type="submit">Submit Request</button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
 };
 
 export default PatientLabTestForm;
+
