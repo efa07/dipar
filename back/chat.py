@@ -30,10 +30,9 @@ def handle_leave(data):
     leave_room(room)
     send(f'{username} has left the {room} room.', to=room)
 
-# Handle incoming messages to specific rooms
 @socketio.on('message')
 def handle_message(data):
-    room = data['room']  # Send the message to a specific room
+    room = data['room'] 
     msg = data['message']
     send(msg, to=room)
 
