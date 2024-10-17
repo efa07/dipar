@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify,session
+from flask import Flask, request, jsonify,session,make_response
 from flask_cors import CORS
 import mysql.connector
 from dotenv import load_dotenv
@@ -14,8 +14,8 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from argon2 import PasswordHasher
 import argon2
 from flask_session import Session
-import redis
 from functools import wraps
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 
@@ -45,16 +45,9 @@ DATABASE_HOST = os.environ.get('DATABASE_HOST')
 DATABASE_NAME = os.environ.get('DATABASE_NAME')
 app.secret_key = os.environ.get('App.secret_key')
 
-# Configure the Redis connection
-app.config['SESSION_TYPE'] = 'redis'
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_KEY_PREFIX'] = 'myapp:'  # Optional: To prevent key collision
-app.config['SESSION_REDIS'] = redis.StrictRedis(host='localhost', port=6379, db=0)
-
-# Initialize the session
-Session(app)
-
+# Configure the  JWT
+app.config['JWT_SECRET_KEY'] = os.environ.get('App.secret_key')
+jwt = JWTManager(app)
 
 if not all([DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME]):
     raise ValueError("Database configuration is incomplete. Please set all required environment variables.")
@@ -168,7 +161,6 @@ def login():
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Query to get user details by email
         query = "SELECT user_id, email, password_hash, role FROM users"
         cursor.execute(query)
         users = cursor.fetchall()
@@ -182,17 +174,16 @@ def login():
                 break
 
         if user:
-            # Correct password verification
+            # password verification
             try:
-                if ph.verify(user[1], password):  # Verify password hash
-                    # Store user information in Redis session
-                    session['user'] = user[0]  # Store user_id in session
-                    session['role'] = user[2]  # Store role in session
-
-                    # Return user_id, message, and role to frontend
+                if ph.verify(user[1], password):
+                    # Generate JWT token instead of using sessions
+                    access_token = create_access_token(identity={'user_id': user[0], 'role': user[2]})
+                    
                     return jsonify({
                         'message': 'Login successful',
-                        'user_id': user[0],  # Send user_id to frontend
+                        'access_token': access_token,
+                        'user_id': user[0],
                         'role': user[2]
                     }), 200
             except argon2.exceptions.VerifyMismatchError:
@@ -215,14 +206,16 @@ def login():
 
 @app.route('/api/logout', methods=['POST'])
 def logout():
-    # Clear session on logout
     session.pop('user', None)
     session.pop('role', None)
     return jsonify({'message': 'Logged out successfully'}), 200
 
+
 @app.route('/api/users', methods=['GET'])
+@jwt_required()
 def get_users():
     """Retrieve all users from the database."""
+    current_user = get_jwt_identity()
     cnx = None
     cursor = None
     try:
@@ -311,8 +304,10 @@ def update_user(user_id):
 
 @app.route('/api/patients', methods=['POST'])
 def register_patient():
+
     cnx = None
     cursor = None
+    
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
@@ -367,6 +362,7 @@ def register_patient():
 
 @app.route("/api/patients", methods=['GET'])
 def get_patients():
+    
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor(dictionary=True)

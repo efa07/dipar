@@ -1,26 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const sidebarItems = [
-  {
-    icon: "bi bi-person",
-    text: "Doctor",
-    to: "/doctor",
-  },
-  {
-    icon: "bi bi-person-badge",
-    text: "Nurse",
-    to: "/nurse",
-  },
-  {
-    icon: "bi bi-clipboard2-pulse",
-    text: "Lab",
-    to: "/medicallab",
-  },
-  {
-    icon: "bi bi-file-medical",
-    text: "Receptionist",
-    to:"/register"
-  }
+ 
 ];
 
 const MainSidebar = () => {

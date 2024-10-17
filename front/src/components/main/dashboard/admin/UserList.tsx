@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import "./userlist.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface User {
     id: number;
@@ -29,7 +31,13 @@ const UsersList: React.FC = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/users');
+            const token = localStorage.getItem('accessToken'); // Get JWT from localStorage
+            const response = await fetch('http://127.0.0.1:5000/api/users', {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Include JWT in Authorization header
+                    'Content-Type': 'application/json',
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setUsers(data);
@@ -61,24 +69,26 @@ const UsersList: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('accessToken');
             const response = await fetch(`http://127.0.0.1:5000/api/users/${formData.id}`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization': `Bearer ${token}`, // Include JWT in Authorization header
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
             });
 
             if (response.ok) {
-                alert('User updated successfully!');
-                fetchUsers(); // Refresh user list after update
+                toast.success('User updated successfully!');
+                fetchUsers(); 
                 setEditingUser(null); // Clear form after editing
             } else {
-                alert('Failed to update user');
+                toast.success('Failed to update user');
             }
         } catch (error) {
             console.error('Error updating user:', error);
-            alert('An error occurred while updating the user');
+            toast.error('An error occurred while updating the user');
         }
     };
 
@@ -179,6 +189,7 @@ const UsersList: React.FC = () => {
                     </Button>
                 </Box>
             )}
+            <ToastContainer />
         </Container>
     );
 };

@@ -40,3 +40,20 @@
 .medical-record-item strong {
   color: var(--primary);
 }
+
+.search-bar {
+  width: 100%; 
+  max-width: 400px; 
+  padding: 10px; 
+  margin: 20px 0;
+  border: 1px solid #22ffca;
+  border-radius: 5px; 
+  font-size: 16px;
+  transition: border-color 0.3s; 
+}
+
+.search-bar:focus {
+  outline: none; 
+  border-color: #00ffb3; 
+  box-shadow: 0 0 5px rgba(34, 255, 202, 0.5);
+}

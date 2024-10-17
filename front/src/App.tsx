@@ -14,8 +14,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import Login from "./components/Login/Login";
 import NotFound from "./components/NotFound";
 import Welcom from "./components/main/dashboard/welcom/Welcom";
-import PrivateRoute from './components/context/PrivateRoute';
-import { AuthProvider } from './components/context/AuthContex'; 
 import Chat from "./components/chat/Chat";
 
 // Separate Component to handle layout
@@ -26,10 +24,10 @@ const MainLayout = () => {
   // Conditionally add a class to the app-container
   const isSpecialRoute = location.pathname === '/' || location.pathname === '/login';
   const isLogin = location.pathname === '/login';
-
+  const isLoged = localStorage.getItem('userRole')
   return (
     <>
-      {!hideHeaderAndSidebar && <Header />}
+      {isLoged && !hideHeaderAndSidebar && <Header />}
       <div className={`app-container ${isSpecialRoute ? 'special-container' : ''}`}>
         {!hideHeaderAndSidebar && (
           <div className="sidebarapp">
@@ -39,14 +37,14 @@ const MainLayout = () => {
         <main className={`main-content ${isLogin ? 'login-scale' : ''}`}>
           <Routes>
             <Route path="*" element={<NotFound />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/doctor/*" element={<PrivateRoute requiredRole="doctor"><Dashboard /></PrivateRoute>} />
-            <Route path="/nurse/*" element={<PrivateRoute requiredRole="nurse"><Dashboard /></PrivateRoute>} />
-            <Route path="/medicallab/*" element={<PrivateRoute requiredRole="lab-staff"><Dashboard /></PrivateRoute>} />
-            <Route path="/admin/*" element={<PrivateRoute requiredRole="admin"><Dashboard /></PrivateRoute>} />
-            <Route path="/register/*" element={<PrivateRoute requiredRole="receptionist"><Dashboard /></PrivateRoute>} />
+            <Route path="/login/*" element={<Login />} />
+            <Route path="/doctor/*" element={isLoged === 'doctor' ? <Dashboard /> : <Login/>} />
+            <Route path="/nurse/*" element={isLoged === 'nurse' ? <Dashboard /> : <Login/>} />
+            <Route path="/medicallab/*" element={isLoged === 'lab-staff' ? <Dashboard /> : <Login/>} />
+            <Route path="/admin/*" element={isLoged === 'admin' ? <Dashboard /> : <Login/>} />
+            <Route path="/register/*" element={isLoged === 'receptionist' ? <Dashboard /> : <Login/>} />
             <Route path="/" element={<Welcom />} />
-            <Route path="/chat" element={<Chat/>} />
+            <Route path="/chat" element={isLoged ? <Chat/> : <Login />} />
           </Routes>
         </main>
       </div>
@@ -57,11 +55,11 @@ const MainLayout = () => {
 
 function App() {
   return (
-    <AuthProvider>
+ 
      <Router>
       <MainLayout />
     </Router>
-    </AuthProvider>
+   
    
   );
 }

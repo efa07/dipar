@@ -10,7 +10,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
@@ -28,16 +28,20 @@ const LoginPage = () => {
             const result = await response.json();
             
             if (response.ok) {
-                const { role ,user_id} = result;
+                const { access_token, role, user_id } = result;
                 
+
+                // Store the JWT token in localStorage
+                localStorage.setItem('accessToken', access_token);
                 localStorage.setItem('userEmail', email);
                 localStorage.setItem('userRole', role);
-                localStorage.setItem("userId", user_id)
+                localStorage.setItem('userId', user_id);
                 
                 // Redirect based on user role
                 switch (role) {
                     case 'doctor':
                         navigate('/doctor');
+                        
                         break;
                     case 'nurse':
                         navigate('/nurse');
@@ -60,7 +64,7 @@ const LoginPage = () => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 throw new Error(result.error || 'Login failed');
             }
-        } catch (error:any) {
+        } catch (error: any) {
             setError(error.message);
         } finally {
             setLoading(false);

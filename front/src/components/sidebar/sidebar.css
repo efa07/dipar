@@ -5,6 +5,9 @@
   left: 0;
   border-right: 1px solid var(--SeafoamGreen); 
 }
+.hide{
+  display: none;
+}
 .sidebar-nav {
   padding: 0;
   margin: 0;

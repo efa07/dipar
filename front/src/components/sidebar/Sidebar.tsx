@@ -9,16 +9,16 @@ import MainSidebar from "./mainNav/MainNav"
 import AdminSidebar from './adminNav/admin'
 
 const Sidebar = () => {
+  const isLoged = localStorage.getItem('userRole')
+  const style = isLoged ? "sidebar mt-4" : "hide"
   return (
-    <aside id="sidebar" className="sidebar mt-4">
+    <aside id="sidebar" className={style}>
       <Routes>
-        <Route path="/" element={<MainSidebar />} />
-        <Route path="/login/*" element={<MainSidebar />} />
-        <Route path="/register/*" element={<Register />} />
-            <Route path="/doctor/*" element={<DoctorSidebar />} />
-            <Route path="/nurse/*" element={<NurseSidebar />} />
-            <Route path="/medicallab/*" element={<MedicalLab />} />
-            <Route path="/admin/*" element={<AdminSidebar/>}/>
+        <Route path="/register/*" element={isLoged === 'receptionist' ? <Register /> :<MainSidebar />} />
+            <Route path="/doctor/*" element={isLoged === 'doctor' ? <DoctorSidebar/>: <MainSidebar />} />
+            <Route path="/nurse/*" element={isLoged === 'nurse' ? <NurseSidebar /> :<MainSidebar />} />
+            <Route path="/medicallab/*" element={isLoged === 'lab-staff' ? <MedicalLab />:<MainSidebar />} />
+            <Route path="/admin/*" element={isLoged === 'admin' ? <AdminSidebar/>:<MainSidebar />}/>
       </Routes>
     </aside>
   );

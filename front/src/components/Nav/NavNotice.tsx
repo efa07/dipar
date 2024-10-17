@@ -17,9 +17,8 @@ const NavNotice = () => {
           throw new Error("Failed to fetch appointments");
         }
         const data = await response.json();
-        // Filter pending appointments and set the count
         const pendingAppointments = data.filter(
-          (appointment) => appointment.status === "pending"
+          (appointment:any) => appointment.status === "pending"
         );
         setPendingCount(pendingAppointments.length);
       } catch (error) {
