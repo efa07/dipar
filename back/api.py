@@ -20,6 +20,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 app = Flask(__name__)
 
 CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
@@ -45,7 +46,7 @@ DATABASE_HOST = os.environ.get('DATABASE_HOST')
 DATABASE_NAME = os.environ.get('DATABASE_NAME')
 app.secret_key = os.environ.get('App.secret_key')
 
-# Configure the  JWT
+ # Configure the  JWT
 app.config['JWT_SECRET_KEY'] = os.environ.get('App.secret_key')
 jwt = JWTManager(app)
 
@@ -221,11 +222,11 @@ def get_users():
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
 
-        # Correctly select user_id instead of id
-        query = "SELECT user_id, first_name, last_name, age, email, role FROM users"
+        # Fetch all required fields in a single query
+        query = "SELECT user_id, first_name, last_name, age, role, email FROM users"
         cursor.execute(query)
         users = cursor.fetchall()
-
+    
         # Prepare response data
         user_list = [
             {
@@ -233,8 +234,7 @@ def get_users():
                 'first_name': user[1],
                 'last_name': user[2],
                 'age': user[3],
-                'email': cipher_suite.decrypt(user[4]).decode('utf-8'),  # Decrypt the email
-                'role': user[5]
+                'role': user[4],
             }
             for user in users
         ]
@@ -244,7 +244,6 @@ def get_users():
     except mysql.connector.Error as err:
         # Log the detailed error for debugging
         logging.error(f"MySQL Error: {err}")
-        # Return the error message for easier debugging
         return jsonify({'error': str(err)}), 500
 
     finally:
@@ -252,6 +251,7 @@ def get_users():
             cursor.close()
         if cnx:
             cnx.close()
+
 
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
@@ -568,33 +568,40 @@ def manage_medical_records():
         if cnx is not None:
             cnx.close()
 
-@app.route('/api/lab_test_requests', methods=['POST'])
-def create_lab_test_request():
+@app.route('/api/lab_test_results', methods=['POST'])
+def create_lab_test_results():
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor(dictionary=True)
         data = request.json
 
-        patient_name = data.get('patient_name')
-        patient_id = data.get('patient_id')
-        selected_tests = json.dumps(data.get('selected_tests', []))
-        notes = data.get('notes', '')
+        # Extract test results
+        test_results = data.get('test_results', [])
 
-        app.logger.debug(f"Received data: {data}")
+        # Validate each test result
+        for test_result in test_results:
+            test_name = test_result.get('test_name')
+            result = test_result.get('result')
 
-        if not patient_name or not patient_id:
-            return jsonify({"error": "Patient name and ID are required."}), 400
+            # Only "Yellow fever", "Malaria", "HIV Test" should have "Positive" or "Negative" results
+            if test_name in ["Yellow fever", "Malaria", "HIV Test"]:
+                if result not in ["Positive", "Negative"]:
+                    return jsonify({"error": f"Invalid result for {test_name}."}), 400
 
-        cursor.execute(
-            """
-            INSERT INTO Lab_Test_Requests (patient_id, patient_name, request_date, selected_tests, notes)
-            VALUES (%s, %s, NOW(), %s, %s)
-            """,
-            (patient_id, patient_name, selected_tests, notes)
-        )
+            # Add further validations as needed
+
+        # Insert the data into the database
+        for test_result in test_results:
+            cursor.execute(
+                """
+                INSERT INTO lab_test_results (request_id, test_name, result, comments)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (data['request_id'], test_result['test_name'], test_result['result'], test_result.get('comments', ''))
+            )
         cnx.commit()
 
-        return jsonify({"message": "Lab test request created successfully."}), 201
+        return jsonify({"message": "Lab test results submitted successfully!"}), 201
 
     except Exception as e:
         app.logger.error(f"Error processing request: {str(e)}")

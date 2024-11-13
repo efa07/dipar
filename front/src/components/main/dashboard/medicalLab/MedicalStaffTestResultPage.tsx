@@ -24,6 +24,16 @@ const MedicalStaffTestResultPage: React.FC = () => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, index: number) => {
     const { name, value } = event.target;
+  
+    // Handle test result selection for Yellow fever, Malaria, and HIV Test
+    if (name === "result" && (formData.test_results[index].test_name === "Yellow fever" || 
+                              formData.test_results[index].test_name === "Malaria" || 
+                              formData.test_results[index].test_name === "COVID-19 Test" ||
+                              formData.test_results[index].test_name === "HIV Test")) {
+      if (value !== "Positive" && value !== "Negative") {
+        return; // Prevent setting invalid values for these tests
+      }
+    }
     if (name === "request_id") {
       setFormData(prevData => ({
         ...prevData,
@@ -41,6 +51,7 @@ const MedicalStaffTestResultPage: React.FC = () => {
       }));
     }
   };
+  
 
   const addTestResult = () => {
     setFormData(prevData => ({
@@ -102,18 +113,20 @@ const MedicalStaffTestResultPage: React.FC = () => {
   };
 
   const testNameOptions = [
-    "Complete Blood Count (CBC)",
-    "Blood Glucose Test",
-    "Liver Function Test (LFT)",
-    "Lipid Profile",
-    "Thyroid Function Test",
-    "Urine Analysis",
-    "Electrolyte Panel",
-    "Coagulation Tests",
-    "Vitamin D Test",
-    "Pregnancy Test",
-    "COVID-19 Test",
-    "Cholesterol Test",
+  "Complete Blood Count (CBC)",
+                "Blood Glucose Test",
+                "Liver Function Test (LFT)",
+                "Lipid Profile",
+                "Thyroid Function Test",
+                "Urine Analysis",
+                "Electrolyte Panel",
+                "Coagulation Tests",
+                "HIV Test",
+                "Pregnancy Test",
+                "COVID-19 Test",
+                "Cholesterol Test",
+                "Yellow fever",
+                "Malaria"
   ];
 
   return (
@@ -138,60 +151,60 @@ const MedicalStaffTestResultPage: React.FC = () => {
           </div>
 
           {formData.test_results.map((testResult, index) => (
-            <div key={index} className="test-result-container">
-              <h3>Test Result {index + 1}</h3>
-              <div className="form-group">
-                <label htmlFor={`test_name_${index}`}>Test Name:</label>
-                <select
-                  id={`test_name_${index}`}
-                  name="test_name"
-                  value={testResult.test_name}
-                  onChange={(e) => handleInputChange(e, index)}
-                  required
-                  aria-required="true"
-                >
-                  <option value="">Select a test</option>
-                  {testNameOptions.map((test) => (
-                    <option key={test} value={test}>
-                      {test}
-                    </option>
-                  ))}
-                </select>
-              </div>
+  <div key={index} className="test-result-container">
+    <h3>Test Result {index + 1}</h3>
 
-              <div className="form-group">
-                <label htmlFor={`result_${index}`}>Result:</label>
-                <input
-                  type="text"
-                  id={`result_${index}`}
-                  name="result"
-                  value={testResult.result}
-                  onChange={(e) => handleInputChange(e, index)}
-                  required
-                  aria-required="true"
-                  maxLength={255}
-                />
-              </div>
+    {/* Test Name */}
+    <div className="form-group">
+      <label htmlFor={`test_name_${index}`}>Test Name:</label>
+      <select
+        id={`test_name_${index}`}
+        name="test_name"
+        value={testResult.test_name}
+        onChange={(e) => handleInputChange(e, index)}
+        required
+        aria-required="true"
+      >
+        <option value="">Select a test</option>
+        {testNameOptions.map((test) => (
+          <option key={test} value={test}>
+            {test}
+          </option>
+        ))}
+      </select>
+    </div>
 
-              <div className="form-group">
-                <label htmlFor={`comments_${index}`}>Comments:</label>
-                <textarea
-                  id={`comments_${index}`}
-                  name="comments"
-                  rows={4}
-                  placeholder="Enter any additional comments..."
-                  value={testResult.comments}
-                  onChange={(e) => handleInputChange(e, index)}
-                ></textarea>
-              </div>
-
-              {index > 0 && (
-                <button type="button" onClick={() => removeTestResult(index)} className="remove-btn btn btn-danger text-white m-1">
-                  Remove Test Result
-                </button>
-              )}
-            </div>
-          ))}
+    {/* Result */}
+    <div className="form-group">
+      <label htmlFor={`result_${index}`}>Result:</label>
+      {testResult.test_name === "Yellow fever" || testResult.test_name === "Malaria" || testResult.test_name === "HIV Test" || testResult.test_name === "COVID-19 Test" ? (
+        <select
+          id={`result_${index}`}
+          name="result"
+          value={testResult.result}
+          onChange={(e) => handleInputChange(e, index)}
+          required
+          aria-required="true"
+        >
+          <option value="">Select Result</option>
+          <option value="Positive">Positive</option>
+          <option value="Negative">Negative</option>
+        </select>
+      ) : (
+        <input
+          type="text"
+          id={`result_${index}`}
+          name="result"
+          value={testResult.result}
+          onChange={(e) => handleInputChange(e, index)}
+          required
+          aria-required="true"
+          maxLength={255}
+        />
+      )}
+    </div>
+  </div>
+))}
 
           <button type="button" onClick={addTestResult} className="add-btn btn btn-primary m-1">
             Add Another Test Result

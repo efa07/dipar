@@ -24,6 +24,7 @@ import PatientManagmentNote from './NurseDash/PatientManagmentNote';
 import MedicalLabPage from './medicalLab/LabTest';
 import MedicalStaffTestResultPage from './medicalLab/MedicalStaffTestResultPage';
 import Chat from "../../chat/Chat";
+import TestResultsChart from "./DoctorDash/TestResultsChart";
 import "./dashboard.css";
 
 const Dashboard = () => {
@@ -54,6 +55,7 @@ const Dashboard = () => {
         <Route path="/test-results" element={<TestResult />} />
         <Route path="/tasks" element={<TodoList />} />
         <Route path="/lab-test/add" element={<PtaientLabTestForm />} />
+        <Route path="/chart" element={<TestResultsChart />} />
 
         <Route path="/new" element={<ReceptionistDashboard />} />
         <Route path='/medicalRecords' element={<MedicalRecordForm />} />

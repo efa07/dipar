@@ -55,6 +55,11 @@ const sidebarItems: SidebarItem[] = [
     to: "/doctor/test-results",
   },
   {
+    icon: "bi bi-pie-chart",
+    text: "Chart",
+    to: "/doctor/chart",
+  },
+  {
     icon: "bi bi-chat-dots",
     text: "Messages",
     to: "/doctor/chat",

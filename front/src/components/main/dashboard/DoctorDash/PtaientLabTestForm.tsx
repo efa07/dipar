@@ -116,10 +116,12 @@ const PatientLabTestForm: React.FC = () => {
                 "Urine Analysis",
                 "Electrolyte Panel",
                 "Coagulation Tests",
-                "Vitamin D Test",
+                "HIV Test",
                 "Pregnancy Test",
                 "COVID-19 Test",
                 "Cholesterol Test",
+                "Yellow fever",
+                "malaria"
               ].map((test) => (
                 <label key={test}>
                   <input

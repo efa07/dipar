@@ -104,7 +104,6 @@ const UsersList: React.FC = () => {
                             <TableCell>First Name</TableCell>
                             <TableCell>Last Name</TableCell>
                             <TableCell>Age</TableCell>
-                            <TableCell>Email</TableCell>
                             <TableCell>Role</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
@@ -115,7 +114,6 @@ const UsersList: React.FC = () => {
                                 <TableCell>{user.first_name}</TableCell>
                                 <TableCell>{user.last_name}</TableCell>
                                 <TableCell>{user.age}</TableCell>
-                                <TableCell>{user.email}</TableCell>
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell>
                                     <Button variant="contained" color="primary" onClick={() => handleEdit(user)}>

@@ -1,0 +1,64 @@
+.test-results-chart-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 70px auto;
+    max-width: 900px;
+    max-height: 1000px;
+  }
+  
+  .test-results-chart-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .test-results-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .test-results-controls label {
+    font-size: 16px;
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    color: #444;
+  }
+  
+  .test-results-controls input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  .test-results-chart-container canvas {
+    margin-top: 30px;
+    display: block;
+    width: 100% !important;
+    height: 400px;
+  }
+  
+  /* Make sure the chart's responsiveness is handled */
+  @media (max-width: 768px) {
+    .test-results-chart-container {
+      padding: 10px;
+    }
+    .test-results-chart-container h2 {
+      font-size: 20px;
+    }
+    .test-results-controls label {
+      font-size: 14px;
+      margin: 0 10px;
+    }
+  }
+  
+  .error-message {
+    color: red;
+    background-color: #f8d7da;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #f5c6cb;
+    font-size: 14px;
+  }
+  
