@@ -20,3 +20,10 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+# Ignore Python cache files
+*.pyc
+__pycache__/
+
+# Ignore virtual environment
+env/
+venv/
