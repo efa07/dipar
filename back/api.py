@@ -180,12 +180,13 @@ def login():
                     # Generate JWT token instead of using sessions
                     access_token = create_access_token(identity={'user_id': user[0], 'role': user[2]})
                     
+                    decoded_access_token = access_token.decode('utf-8')
                     return jsonify({
                         'message': 'Login successful',
-                        'access_token': access_token,
+                        'access_token': decoded_access_token,
                         'user_id': user[0],
                         'role': user[2]
-                    }), 200
+                    })
             except argon2.exceptions.VerifyMismatchError:
                 logging.error(f"Password mismatch for email: {email}")
                 return jsonify({'error': 'Invalid email or password'}), 401
@@ -212,10 +213,8 @@ def logout():
 
 
 @app.route('/api/users', methods=['GET'])
-@jwt_required()
 def get_users():
     """Retrieve all users from the database."""
-    current_user = get_jwt_identity()
     cnx = None
     cursor = None
     try:
@@ -301,29 +300,34 @@ def update_user(user_id):
         if cnx:
             cnx.close()
 
-
 @app.route('/api/patients', methods=['POST'])
 def register_patient():
-
     cnx = None
     cursor = None
-    
+
     try:
         cnx = mysql.connector.connect(**db_config)
         cursor = cnx.cursor()
         data = request.json
+        
 
         logging.info(f"Received data: {data}")
 
+        # Define required and optional keys
         required_keys = ['firstName', 'lastName', 'dob', 'gender', 'email', 'city', 'state', 'zip', 'emergencyContactName', 'emergencyContactPhone', 'relationship']
+        optional_keys = ['insuranceProvider', 'policyNumber', 'groupNumber', 'allergies', 'medications', 'maritalStatus', 'occupation']
+
+        # Check for missing required fields
         if not all(key in data for key in required_keys):
             logging.error("Missing required patient information")
             return jsonify({'error': 'Missing required patient information'}), 400
 
+        # Validate email
         if not is_valid_email(data['email']):
             logging.error(f"Invalid email format: {data['email']}")
             return jsonify({'error': 'Invalid email format'}), 400
 
+        # Check for duplicate email
         check_email_sql = "SELECT COUNT(*) FROM patients WHERE email = %s"
         cursor.execute(check_email_sql, (data['email'],))
         email_count = cursor.fetchone()[0]
@@ -332,14 +336,31 @@ def register_patient():
             logging.error(f"Email {data['email']} already exists")
             return jsonify({'error': 'Email already exists'}), 409
 
-        values = [data[key] for key in required_keys]
+        # Prepare values for insertion
+        values = [data.get(key) for key in required_keys]
 
-        sql = """INSERT INTO patients (firstName, lastName, dob, gender, email, city, state, zip, emergencyContactName, emergencyContactPhone, relationship)
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        # Handle optional fields and serialize arrays for allergies and medications
+        values += [
+            data.get('insurance_provider', ''),
+            data.get('policy_number', ''),
+            data.get('group_number', ''),
+            ', '.join(data.get('allergies', [])),
+            ', '.join(data.get('medications', [])),
+            data.get('marital_status', ''),
+            data.get('occupation', '')
+        ]
 
+        # SQL statement with all fields matching the table structure
+        sql = """
+            INSERT INTO patients (first_name, last_name, dob, gender, email, city, state, zip, emergency_contact_name, emergency_contact_phone, relationship,
+                                  insurance_provider, policy_number, group_number, allergies, medications, marital_status, occupation)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        # Execute and commit
         cursor.execute(sql, values)
         cnx.commit()
-        
+
         return jsonify({'message': 'Patient registered successfully'}), 201
 
     except mysql.connector.Error as err:
@@ -359,6 +380,7 @@ def register_patient():
             cursor.close()
         if cnx is not None:
             cnx.close()
+
 
 @app.route("/api/patients", methods=['GET'])
 def get_patients():

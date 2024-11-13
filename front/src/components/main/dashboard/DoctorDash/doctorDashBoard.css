@@ -10,11 +10,13 @@
   width: 100%;
   display: flex;
   align-items: center;
-  margin-left: 100px;
+  flex-direction: column;
 }
 .search-input {
   padding: 10px;
-  border: 1px solid #22ffca;
+  width: 50%;
+  margin: 0 auto;
+  border: 1px solid #333;
   border-radius: 4px;
   margin-bottom: 20px;
   font-size: 16px;
@@ -24,6 +26,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  scale: 0.9;
 }
 
 .patient-table {
@@ -36,7 +39,7 @@
 }
 
 .patient-table thead {
-  background-color: #22ffca;
+  background-color: #333;
   color: #fff;
 }
 
@@ -53,9 +56,6 @@
   background-color: #f2f2f2;
 }
 
-.patient-table tr:hover {
-  background-color: #e0f7fa;
-}
 
 .patient-table td:first-child {
   font-weight: bold;
@@ -82,5 +82,8 @@ h3 {
   color: #333;
 }
 strong{
-color: #22ffca;
+color: #333;
 }
+
+
+

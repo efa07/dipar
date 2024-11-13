@@ -119,7 +119,6 @@ const Prescriptions: React.FC = () => {
               <p><strong>Medication:</strong> {pre.medication}</p>
               <p><strong>Dosage:</strong> {pre.dosage}</p>
               <p><strong>Frequency:</strong> {pre.frequency}</p>
-              <p><strong>Prescribing Doctor:</strong> {pre.prescribing_doctor}</p>
             </div>
           ))
         ) : (
@@ -168,17 +167,6 @@ const Prescriptions: React.FC = () => {
               name="frequency"
               value={form.frequency}
               onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Prescribing Doctor ID:
-            <input
-              type="number"
-              name="doctor_id"
-              value={form.doctor_id}
-              onChange={handleChange}
-              disabled  // Prevent doctor from editing the doctor_id
               required
             />
           </label>

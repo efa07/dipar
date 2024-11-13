@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "npm start --prefix front",
+    "start:backend": "cd back && python api.py"
+  },
+  "dependencies": {
+    "redis": "^4.7.0"
+  }
+}

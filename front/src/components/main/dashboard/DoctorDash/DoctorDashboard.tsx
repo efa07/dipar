@@ -1,4 +1,4 @@
-import "./doctorDashBoard.css";
+ import "./doctorDashBoard.css";
 import { useState, useEffect } from "react";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import Logo from "./user .png";
@@ -6,8 +6,8 @@ import Logo from "./user .png";
 // Define the Patient type
 interface Patient {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   dob: string;
   gender: string;
   city: string;
@@ -17,6 +17,15 @@ interface Patient {
   emergencyContactName: string;
   emergencyContactPhone: string;
   relationship: string;
+  allergies: string;
+  medications: string;
+  marital_status: string;
+  occupation: string;
+  insurance_provider: string;
+  policy_number: string;
+  group_number: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const DoctorDashboard: React.FC = () => {
@@ -52,10 +61,11 @@ const DoctorDashboard: React.FC = () => {
   // Find the patient whose full name matches the search term
   const searchedPatient = patients.find(
     (patient) =>
-      `${patient.firstName.toLowerCase()} ${patient.lastName.toLowerCase()}`.includes(
+      `${patient.first_name?.toLowerCase() || ""} ${patient.last_name?.toLowerCase() || ""}`.includes(
         searchTerm.toLowerCase()
       )
   );
+  
 
   if (loading) {
     return (
@@ -76,67 +86,76 @@ const DoctorDashboard: React.FC = () => {
 
   return (
     <div className="doctor-dashboard">
-<h2>Patient Information</h2>
+      
       {/* Search field */}
       <div className="searchField">
+      <h2>Patient Information</h2>
         <input
-        type="text"
-        className="search-input"
-        placeholder="Search patient by full name..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-        style={{ marginLeft: '30%' }}
-      />
-      </div>
-      
-
-      {searchedPatient ? (
-        <div className="patient-info">
-
-          <div className="imgName">
+          type="text"
+          className="search-input"
+          placeholder="Search patient by full name..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+        <div className="imgName">
             <img src={Logo} alt="Patient Avatar" />
           </div>
+      </div>
+  
+      {searchedPatient ? (
+        <div className="patient-info">
+          
           <table className="patient-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Information</th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
                 <td><strong>Name:</strong></td>
-                <td>{searchedPatient.firstName.toUpperCase() }  {searchedPatient.lastName.toLocaleUpperCase()}</td>
+                <td>{`${searchedPatient.first_name?.toUpperCase() || ""} ${searchedPatient.last_name?.toUpperCase() || ""}`}</td>
               </tr>
               <tr>
                 <td><strong>Date of Birth:</strong></td>
-                <td>{new Date(searchedPatient.dob).toLocaleDateString()}</td>
+                <td>{searchedPatient.dob ? new Date(searchedPatient.dob).toLocaleDateString() : ""}</td>
               </tr>
               <tr>
                 <td><strong>Gender:</strong></td>
-                <td>{searchedPatient.gender.toUpperCase()}</td>
+                <td>{searchedPatient.gender?.toUpperCase() || ""}</td>
               </tr>
               <tr>
                 <td><strong>City:</strong></td>
-                <td>{searchedPatient.city.toUpperCase()}</td>
+                <td>{searchedPatient.city?.toUpperCase() || ""}</td>
               </tr>
               <tr>
                 <td><strong>State:</strong></td>
-                <td>{searchedPatient.state.toUpperCase()}</td>
+                <td>{searchedPatient.state?.toUpperCase() || ""}</td>
               </tr>
               <tr>
                 <td><strong>Zip Code:</strong></td>
-                <td>{searchedPatient.zip}</td>
+                <td>{searchedPatient.zip || ""}</td>
               </tr>
               <tr>
                 <td><strong>Email:</strong></td>
-                <td>{searchedPatient.email}</td>
+                <td>{searchedPatient.email || ""}</td>
               </tr>
               <tr>
                 <td><strong>Emergency Contact Name:</strong></td>
-                <td>{searchedPatient.emergencyContactName.toUpperCase()}</td>
+                <td>{searchedPatient.emergency_contact_name?.toUpperCase() || ""}</td>
               </tr>
               <tr>
                 <td><strong>Emergency Contact Phone:</strong></td>
-                <td>{searchedPatient.emergencyContactPhone}</td>
+                <td>{searchedPatient.emergency_contact_phone || ""}</td>
               </tr>
               <tr>
                 <td><strong>Relationship:</strong></td>
-                <td>{searchedPatient.relationship.toLocaleUpperCase()}</td>
+                <td>{searchedPatient.relationship?.toUpperCase() || ""}</td>
+              </tr>
+              <tr>
+                <td><strong>Allergies:</strong></td>
+                <td>{searchedPatient.allergies?.toUpperCase() || ""}</td>
               </tr>
             </tbody>
           </table>
@@ -148,6 +167,9 @@ const DoctorDashboard: React.FC = () => {
       )}
     </div>
   );
+  
 };
 
 export default DoctorDashboard;
+
+
